@@ -1,3 +1,10 @@
+# Daniel Moreno 
+# CECS 427-01 Dynamic Networks
+# Due Date: February 6, 2024
+
+# Creating a global variable G, acting as "memory"
+G = ""
+
 def menu():
     print("MAIN MENU")
     print("1. Read a Graph")
@@ -8,13 +15,20 @@ def menu():
     print("x. Exit\n")
 
 def read_graph():
-    pass
+    print("Printing Graph:\n",G)
 
 def save_graph():
-    pass
+    file_name = "File_name.txt"
+    try:
+        with open(file_name, 'w') as file:
+            file.write(G)
+            file.close()
+    except FileNotFoundError:
+        print("File not found!")
 
-def create_graph():
-    pass
+def create_graph(): 
+    n = int(input("Please input an n value: "))
+    c = float(input("Please input a c value: "))
 
 def shortest_path():
     pass
