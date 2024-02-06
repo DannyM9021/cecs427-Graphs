@@ -1,29 +1,8 @@
 #graphs.py
-# GMT Tue Feb  6 05:56:12 2024
+# GMT Tue Feb  6 06:47:38 2024
 # 
-a
-b
-c
-d
+a c d
+b e
+c e
+d e
 e
-f
-g
-h u
-i
-j
-k
-l
-m
-n
-o
-p
-q
-r
-s
-t
-u
-v
-w
-x
-y
-z
