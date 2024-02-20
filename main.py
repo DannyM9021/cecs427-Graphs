@@ -1,6 +1,6 @@
 # Daniel Moreno 
 # CECS 427-01 Dynamic Networks
-# Due Date: February 6, 2024
+# Due Date: February 22, 2024
 
 # Importing networkx and numpy as recommended by the documentation
 import networkx as nx
@@ -39,7 +39,6 @@ def save_graph(G):
     File_name = input("Please input a file to save to: ")
     try:
         with open(File_name, 'w') as file:
-            print(G)
             nx.write_adjlist(G, File_name)
             file.close()
             print("Graph saved into file!\n")
@@ -51,17 +50,18 @@ def save_graph(G):
 
 # Creates an Erdos-Reny graph using n nodes and a closeness coefficient provided by a user
 def create_graph(G):
+    # Re-initializing shortest path to non-existant
     global short
     short = []
     n = int(input("Please input an n value (number of nodes): "))
     c = float(input("Please input a c value (closeness coefficient): "))
     # Equation to calculate probability of edges being connected
     p = c * (np.log(n)/n)
+    # Using builtin function as well as adding randomness using numpy library
     G = nx.erdos_renyi_graph(n, p, seed=np.random)
-    # Remapping node numbers to a corresponding letter since erdos_renyi_graph function uses integers
-    mapping = {0:'a',1:'b',2:'c',3:'d',4:'e',5:'f',6:'g',7:'h',8:'i',9:'j',10:'k',11:'l',12:'m',
-               13:'n',14:'o',15:'p',16:'q',17:'r',18:'s',19:'t',20:'u',21:'v',22:'w',23:'x',24:'y',25:'z'}
-    G = nx.relabel_nodes(G, mapping, copy=True)
+    # Fixes the issue with shortest path right after creating
+    G = nx.relabel_nodes(G, {node:str(node) for node in G.nodes()})
+    print(G)
     print("Graph successfully created and saved to memory!\n")
     return G
 
@@ -81,14 +81,14 @@ def shortest_path(G):
         string = string[:-2]
         print(string)
         print()
+        return G
     # Handling Exceptions
     except nx.NodeNotFound:
-        print("Source not found in graph G!\n")
+        print("Node(s) not found in graph G!\n")
         return G
     except nx.NetworkXNoPath:
         print(f"No path between {source} and {target} was found\n")
         return G
-    return G
 
 # Plots the graph G and highlights shortest path if it exists
 # used https://stackoverflow.com/questions/24024411/highlighting-the-shortest-path-in-a-networkx-graph as a resource
@@ -100,8 +100,8 @@ def plot(G):
     # Plots shortest path ONLY if it exists
     if short != []:
         short_path_edges = list(zip(short, short[1:]))
-        nx.draw_networkx_nodes(G, pos, nodelist=short, node_color='b')
-        nx.draw_networkx_edges(G, pos, edgelist=short_path_edges, edge_color='b', width=5)
+        nx.draw_networkx_nodes(G, pos, nodelist=short, node_color='r')
+        nx.draw_networkx_edges(G, pos, edgelist=short_path_edges, edge_color='r', width=5)
     # Plotting the graph with equal axis
     plt.axis('equal')
     plt.show()
