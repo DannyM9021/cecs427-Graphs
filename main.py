@@ -16,7 +16,7 @@ def menu():
     print("1. Read a Graph")
     print("2. Save the Graph")
     print("3. Create a Graph")
-    print("4. Shortest Path")
+    print("4. Algorithms")
     print("5. Plot Graph")
     print("x. Exit\n")
 
@@ -81,6 +81,7 @@ def create_graph(G):
 # Creates Karate-Club Graph provided by networkx
 def karate_club(G):
     G = nx.karate_club_graph()
+    print("Karate Graph successfully created and saved to memory\n")
     return G
 
 # Uses the shortest path algorithm using networkx's library
@@ -110,7 +111,36 @@ def shortest_path(G):
 
 # Partition of Graph
 def parition_graph(G):
-    print("PARTITION")
+    # Getting the amount of components a user wants
+    requested_components = int(input("Please enter the of components you wish to be connected: "))
+    connected_comp = 0
+
+    # In a try/exception block to prevent program from crashing
+    try:
+        # Loops until requested connected compnents have been met
+        while connected_comp < requested_components:
+            # Using Networkx built-in betweeness function (attached for reference)
+            # https://networkx.org/documentation/stable/reference/algorithms/generated/networkx.algorithms.centrality.edge_betweenness_centrality.html
+            betweeness = nx.edge_betweenness_centrality(G)
+
+            # Getting the largest edge with betweeness using python's max function, since edge_betweenness_centrality is a dictionary, we can user
+            # key = betweeness.get to get the edge with the highest betweeness
+            biggest_betweeness = max(betweeness, key=betweeness.get)
+
+            # Removing that edge from the saved Graph
+            # https://networkx.org/documentation/stable/reference/classes/generated/networkx.Graph.remove_edge.html
+            # used as reference: G.remove_edge(*e)  # unpacks e from an edge tuple
+            G.remove_edge(*biggest_betweeness)
+
+            # Checks the connected components at the moment after removing the edge
+            # Used Networkx Connected Component function
+            # https://networkx.org/documentation/stable/reference/algorithms/generated/networkx.algorithms.components.number_connected_components.html
+            connected_comp = nx.number_connected_components(G)
+
+    # Not sure what kind of exception might happen, so catching any exception that could happen
+    except Exception as e:
+        print(e)
+
     return G
 
 # Plots the graph G and highlights shortest path if it exists
