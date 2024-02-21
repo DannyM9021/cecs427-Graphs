@@ -18,6 +18,7 @@ def menu():
     print("3. Create a Graph")
     print("4. Algorithms")
     print("5. Plot Graph")
+    print("6. Assign and Validate Attributes")
     print("x. Exit\n")
 
 # As part of new assignment, submenu for some of the new features
@@ -32,6 +33,9 @@ def sub_menu(selection:str):
         print("1. The Shortest Path")
         print("2. Cluster Coefficients")
         print("3. Neighborhood Overlaps\n")
+    elif (selection == '6'):
+        print("1. Homophily")
+        print("2. Balanced Graph")
 
 # Reads a graph provided by user's input and saved to memory G
 def read_graph(G):
@@ -139,7 +143,7 @@ def parition_graph(G):
 
     # Not sure what kind of exception might happen, so catching any exception that could happen
     except Exception as e:
-        print(e)
+        print("Exception:", e,"; Partition failed!\n")
 
     return G
 
@@ -169,6 +173,16 @@ def plot_cluster(G):
 # Neighborhood overlap mapping
 def neighborhood_overlap(G):
     print("Neighbor")
+    return G
+
+# Homophily of a graph
+def homophily(G):
+    print("Homophily")
+    return G
+
+# Adding "+" or "-" to each edge
+def balanced_graph(G):
+    print("Balancing")
     return G
 
 # Simple selction menu to handle user's input
@@ -220,6 +234,18 @@ def selection(selection: str, G) -> None:
         elif (new == '3'):
             print("Now Plotting Neighborhood Overlap...\n")
             return neighborhood_overlap(G)
+        else:
+            print("Invalid Option\n")
+
+    elif (selection == '6'):
+        sub_menu(selection)
+        new = input("Please make a choice: ")
+        if (new == '1'):
+            print("Now Assigning Homophily...\n")
+            return homophily(G)
+        elif (new == '2'):
+            print("Now Assigning Balance to Graph...\n")
+            return balanced_graph(G)
         else:
             print("Invalid Option\n")
 
