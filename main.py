@@ -15,7 +15,7 @@ def menu():
     print("MAIN MENU")
     print("1. Read a Graph")
     print("2. Save the Graph")
-    print("3. Create a Random Graph")
+    print("3. Create a Graph")
     print("4. Shortest Path")
     print("5. Plot Graph")
     print("x. Exit\n")
@@ -80,7 +80,7 @@ def create_graph(G):
 
 # Creates Karate-Club Graph provided by networkx
 def karate_club(G):
-    print("KARATE")
+    G = nx.karate_club_graph()
     return G
 
 # Uses the shortest path algorithm using networkx's library
