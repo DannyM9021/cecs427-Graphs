@@ -20,6 +20,19 @@ def menu():
     print("5. Plot Graph")
     print("x. Exit\n")
 
+# As part of new assignment, submenu for some of the new features
+def sub_menu(selection:str):
+    if (selection == '3'):
+        print("1. Random Erdos-Reny Graph")
+        print("2. Karate-Club Graph\n")
+    elif (selection == '4'):
+        print("1. Shortest Path")
+        print("2. Partition G\n")
+    elif (selction == '5'):
+        print("1. The Shortest Path")
+        print("2. Cluster Coefficients")
+        print("3. Neighborhood Overlaps\n")
+
 # Reads a graph provided by user's input and saved to memory G
 def read_graph(G):
     File_name = input("Please input a file to read from: ")
@@ -100,6 +113,7 @@ def plot(G):
     # Plots shortest path ONLY if it exists
     if short != []:
         short_path_edges = list(zip(short, short[1:]))
+        print(type(short_path_edges))
         nx.draw_networkx_nodes(G, pos, nodelist=short, node_color='r')
         nx.draw_networkx_edges(G, pos, edgelist=short_path_edges, edge_color='r', width=5)
     # Plotting the graph with equal axis
@@ -119,16 +133,42 @@ def selection(selection: str, G) -> None:
         return save_graph(G)
 
     elif (selection == '3'):
-        print("Now creating graph...\n")
-        return create_graph(G)
+        sub_menu(selection)
+        new = input("Please make a choice: ")
+        if (new == '1'):
+            print("Now creating graph...\n")
+            return create_graph(G)
+
+        elif (new == '2'):
+            print("NOT IMPLEMENTED YET")
+            return G
+
+        else:
+            print("Invalid Option\n")
 
     elif (selection == '4'):
-        print("Now finding shortest path...\n")
-        return shortest_path(G)
+        sub_menu(selection)
+        new = input("Please make a choice: ")
+        if (new == '1'):
+            print("Now finding shortest path...\n")
+            return shortest_path(G)
+        elif (new =='2'):
+            print("NOT IMPLEMENTED YET")
+        else:
+            print("Invalid Option\n")
 
     elif (selection == '5'):
-        print("Now Plotting...\n")
-        return plot(G)
+        sub_menu(selection)
+        new = input("Please make a choice: ")
+        if (new == '1'):
+            print("Now Plotting...\n")
+            return plot(G)
+        elif (new == '2'):
+            print("Not implemented yet")
+        elif (new == '3'):
+            print("Not implement yet")
+        else:
+            print("Invalid Option\n")
 
     elif (selection == 'x'):
         print("Now Exiting...\n")
