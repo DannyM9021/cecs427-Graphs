@@ -28,7 +28,7 @@ def sub_menu(selection:str):
     elif (selection == '4'):
         print("1. Shortest Path")
         print("2. Partition G\n")
-    elif (selction == '5'):
+    elif (selection == '5'):
         print("1. The Shortest Path")
         print("2. Cluster Coefficients")
         print("3. Neighborhood Overlaps\n")
@@ -78,6 +78,11 @@ def create_graph(G):
     print("Graph successfully created and saved to memory!\n")
     return G
 
+# Creates Karate-Club Graph provided by networkx
+def karate_club(G):
+    print("KARATE")
+    return G
+
 # Uses the shortest path algorithm using networkx's library
 def shortest_path(G):
     source = input("Please enter a source node: ")
@@ -103,6 +108,11 @@ def shortest_path(G):
         print(f"No path between {source} and {target} was found\n")
         return G
 
+# Partition of Graph
+def parition_graph(G):
+    print("PARTITION")
+    return G
+
 # Plots the graph G and highlights shortest path if it exists
 # used https://stackoverflow.com/questions/24024411/highlighting-the-shortest-path-in-a-networkx-graph as a resource
 def plot(G):
@@ -119,6 +129,16 @@ def plot(G):
     # Plotting the graph with equal axis
     plt.axis('equal')
     plt.show()
+    return G
+
+# Plotting of the cluster coefficient
+def plot_cluster(G):
+    print("CLUSTER")
+    return G
+
+# Neighborhood overlap mapping
+def neighborhood_overlap(G):
+    print("Neighbor")
     return G
 
 # Simple selction menu to handle user's input
@@ -140,8 +160,8 @@ def selection(selection: str, G) -> None:
             return create_graph(G)
 
         elif (new == '2'):
-            print("NOT IMPLEMENTED YET")
-            return G
+            print("Now creating Karate Club Graph...\n")
+            return karate_club(G)
 
         else:
             print("Invalid Option\n")
@@ -153,7 +173,8 @@ def selection(selection: str, G) -> None:
             print("Now finding shortest path...\n")
             return shortest_path(G)
         elif (new =='2'):
-            print("NOT IMPLEMENTED YET")
+            print("Now Partitioning Graph...\n")
+            return parition_graph(G)
         else:
             print("Invalid Option\n")
 
@@ -161,12 +182,14 @@ def selection(selection: str, G) -> None:
         sub_menu(selection)
         new = input("Please make a choice: ")
         if (new == '1'):
-            print("Now Plotting...\n")
+            print("Now Plotting Shortest Path...\n")
             return plot(G)
         elif (new == '2'):
-            print("Not implemented yet")
+            print("Now Plotting Coefficient Cluster...\n")
+            return plot_cluster(G)
         elif (new == '3'):
-            print("Not implement yet")
+            print("Now Plotting Neighborhood Overlap...\n")
+            return neighborhood_overlap(G)
         else:
             print("Invalid Option\n")
 
