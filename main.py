@@ -218,7 +218,49 @@ def plot_cluster(G):
 
 # Neighborhood overlap mapping
 def neighborhood_overlap(G):
-    print("Neighbor")
+    # Making a dictionary to store (u,v) pairs with common neighbors generated using
+    # networkx's common_neighbors function
+    # https://networkx.org/documentation/stable/reference/generated/networkx.classes.function.common_neighbors.html
+    common_neighbors = {}
+
+    # From CLuster Coefficient Function
+    clustering_coefficients = nx.clustering(G)
+    minimum_coeff = min(clustering_coefficients.values()) + 0.00000001 # Adding a super small constant to prevent divide by 0
+    maximum_coeff = max(clustering_coefficients.values())
+
+    colors = []
+
+
+    try:
+        # From Cluster Coefficient Function
+        for nodev, coeff in clustering_coefficients.items():
+            # Calculating the proportional coefficient using formula given from instructions
+            pv = (coeff - minimum_coeff)/(maximum_coeff- minimum_coeff)
+
+            # RGB Color where R = pv * 254, G = 254, B = 0 (according to instructions)
+            # Dividing by 255 to normalize, since matplotlib requires them to be in the range between 0 and 1
+            # https://matplotlib.org/stable/users/explain/colors/colors.html
+            RGB = (int(pv * 254)/255,254/255,0) # type casting int(R) since may be int
+            colors.append(RGB)
+
+        # Nodes is a tuple of u,v edges saved as (u,v)
+        for nodes in G.edges():
+            common_neighbors.update({nodes:nx.common_neighbors(G,nodes[0],nodes[1])})
+
+        # Graph plotting!
+        # Determining position of each node (used in other graphs)
+        pos = nx.spring_layout(G)
+        # Drawing the main graph
+        nx.draw(G, pos, with_labels=True, node_color = 'pink', node_size=500)
+        for nodes, common_neigh in common_neighbors.items():
+            for common in common_neigh:
+                nx.draw_networkx_edges(G, pos, edgelist = [(nodes[0],common),(nodes[1],common)], edge_color = colors)
+        plt.show()
+
+    # Catching any unwanted exception
+    except Exception as e:
+        print("Exception:",e,"Graphing Neighborhood Overlap Failed!\n")
+
     return G
 
 # Homophily of a graph
