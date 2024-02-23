@@ -83,7 +83,10 @@ def create_graph(G):
     G.graph["cluster_enable"] = False
     G.graph["cluster_node_sizes"] = []
     G.graph["cluster_node_colors"] = []
-    print(G)
+    # Initializing now so it can be used in neighborhood enbaling and disabling
+    G.graph["neighbor_enable"] = False
+    G.graph["neighbor_edge_colors"] = {}
+
     print("Graph successfully created and saved to memory!\n")
     return G
 
@@ -96,6 +99,9 @@ def karate_club(G):
     G.graph["cluster_enable"] = False
     G.graph["cluster_node_sizes"] = []
     G.graph["cluster_node_colors"] = []
+    # Initializing now so it can be used in neighborhood enbaling and disabling
+    G.graph["neighbor_enable"] = False
+    G.graph["neighbor_edge_colors"] = {}
 
     print("Karate Graph successfully created and saved to memory\n")
     return G
@@ -293,6 +299,32 @@ def plot_cluster(G):
 
 # Neighborhood overlap mapping
 def neighborhood_overlap(G):
+    # Similar to Shortest Path Plotting and Cluster Coefficient for enabling and disabling
+    print("1. Enable\Disable Neighborhood Overlap\n2. Continue\n")
+    enable_disable = input("Do you want to Enable/Disable Neighborhood Overlap or continue? ")
+    if (enable_disable == '1'):
+        print("1. Enable\n2. Disable")
+        switch = input("Please Make a choice: ")
+
+        if (switch == '1'):
+            if (G.graph["neighbor_enable"] == False):
+                G.graph["neighbor_enable"] = True
+                print("ENABLE\n")
+            else:
+                print("Already Enabled, returning to main menu...\n")
+                return G
+        elif (switch == '2'):
+            if (G.graph["neighbor_enable"] == True):
+                G.graph["neighbor_enable"] = False
+                G.graph["neighbor_edge_colors"] = {}
+                print("DISABLED\n")
+            else:
+                print("Already Disabled, returning to main menu...\n")
+                return G
+        else:
+            print("OPTION NOT VALID\n")
+            return G
+
     # Making a dictionary to store (u,v) pairs with common neighbors generated using
     # networkx's common_neighbors function
     # https://networkx.org/documentation/stable/reference/generated/networkx.classes.function.common_neighbors.html
@@ -326,10 +358,11 @@ def neighborhood_overlap(G):
         # Determining position of each node (used in other graphs)
         pos = nx.spring_layout(G)
         # Drawing the main graph
-        nx.draw(G, pos, with_labels=True, node_color = 'pink', node_size=500)
-        for nodes, common_neigh in common_neighbors.items():
-            for common in common_neigh:
-                nx.draw_networkx_edges(G, pos, edgelist = [(nodes[0],common),(nodes[1],common)], edge_color = colors)
+        nx.draw(G, pos, with_labels=True)
+        if (G.graph["neighbor_enable"] == True):
+            for nodes, common_neigh in common_neighbors.items():
+                for common in common_neigh:
+                    nx.draw_networkx_edges(G, pos, edgelist = [(nodes[0],common),(nodes[1],common)], edge_color = colors)
         plt.show()
 
     # Catching any unwanted exception
