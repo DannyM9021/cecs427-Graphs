@@ -70,6 +70,7 @@ def create_graph(G):
     # Re-initializing shortest path to non-existant
     global short
     short = []
+    G.graph["short_path"] = []
     n = int(input("Please input an n value (number of nodes): "))
     c = float(input("Please input a c value (closeness coefficient): "))
     # Equation to calculate probability of edges being connected
@@ -85,6 +86,9 @@ def create_graph(G):
 # Creates Karate-Club Graph provided by networkx
 def karate_club(G):
     G = nx.karate_club_graph()
+    # Fixes the issue with shortest path right after creating (from Erdos-Renyi Function)
+    G = nx.relabel_nodes(G, {node:str(node) for node in G.nodes()})
+
     print("Karate Graph successfully created and saved to memory\n")
     return G
 
@@ -97,6 +101,8 @@ def shortest_path(G):
         short_path = nx.shortest_path(G, source, target)
         global short
         short = short_path
+
+        G.graph["short_path"] = short_path
         # Printing shortest path on the console
         string = ""
         for i in range(len(short_path)):
@@ -149,15 +155,40 @@ def parition_graph(G):
 
 # Plots the graph G and highlights shortest path if it exists
 # used https://stackoverflow.com/questions/24024411/highlighting-the-shortest-path-in-a-networkx-graph as a resource
-def plot(G):
+def plot_shortest(G):
     global short
+    
+    print("1. Enable\Disable Shortest Path\n2. Continue\n")
+    enable_disable = input("Do you want to Enable/Disable Shortest Path or continue?")
+    if (enable_disable == '1'):
+        print("1. Enable\n2. Disable")
+        switch = input("Please Make a choice: ")
+
+        if (switch == '1'):
+            if (G.graph["short_path"] == []):
+                G.graph["short_path"] == short
+                print("ENABLE\n")
+            else:
+                print("Already Enabled, returning to main menu...\n")
+                return G
+        elif (switch == '2'):
+            if (G.graph["short_path"] == short):
+                G.graph["short_path"] = []
+                print("DISABLED\n")
+            else:
+                print("Already Disabled, returning to main menu...\n")
+                return G
+        else:
+            print("OPTION NOT VALID\n")
+            return G
+
     # Helps set position of graph for node and edges
     pos = nx.spring_layout(G)
     nx.draw_networkx(G, pos)
     # Plots shortest path ONLY if it exists
-    if short != []:
+    if G.graph["short_path"] != []:
+        print("IN HERE")
         short_path_edges = list(zip(short, short[1:]))
-        print(type(short_path_edges))
         nx.draw_networkx_nodes(G, pos, nodelist=short, node_color='r')
         nx.draw_networkx_edges(G, pos, edgelist=short_path_edges, edge_color='r', width=5)
     # Plotting the graph with equal axis
@@ -315,7 +346,7 @@ def selection(selection: str, G) -> None:
         new = input("Please make a choice: ")
         if (new == '1'):
             print("Now Plotting Shortest Path...\n")
-            return plot(G)
+            return plot_shortest(G)
         elif (new == '2'):
             print("Now Plotting Coefficient Cluster...\n")
             return plot_cluster(G)
