@@ -6,6 +6,7 @@
 import networkx as nx
 import numpy as np
 import matplotlib.pyplot as plt
+import random
 
 # Making a global variable for shortest path
 short = []
@@ -95,6 +96,8 @@ def karate_club(G):
     G = nx.karate_club_graph()
     # Fixes the issue with shortest path right after creating (from Erdos-Renyi Function)
     G = nx.relabel_nodes(G, {node:str(node) for node in G.nodes()})
+    # Initializing now so it can be used later in shortest path
+    G.graph["short_path"] = []
     # Initializing now so it can be used in cluster enabling and disabling
     G.graph["cluster_enable"] = False
     G.graph["cluster_node_sizes"] = []
@@ -373,7 +376,58 @@ def neighborhood_overlap(G):
 
 # Homophily of a graph
 def homophily(G):
-    print("Homophily")
+    # Random p value will be generated using python's random module
+    probability_p = random.uniform(0,1)
+
+    # Going through all the nodes in the Graph and assigning either red or blue
+    # depending on more random events
+    for graph_node in G.nodes():
+        random_number = random.uniform(0,1) 
+        if random_number < probability_p:
+            G.nodes[graph_node]["homophily_color"] = "red"
+        else:
+            G.nodes[graph_node]["homophily_color"] = "blue"
+    # Using Networkx's assortativiy coefficient function, giving homophily_color
+    # as a parameter to use it and find homophily
+    homophily = nx.attribute_assortativity_coefficient(G,"homophily_color")
+    print("According to Networkx Assortativity Function, coefficient is:", homophily,"\n")
+
+    cross_colored = 0
+    red_nodes = 0
+    blue_nodes = 0
+    total_edges_n = 0
+    # Going through all of the edges and checking if the next node is a different color
+    for graph_edge in G.edges():
+        total_edges_n += 1
+        node1 = graph_edge[0]
+        node2 = graph_edge[1]
+        if (G.nodes[node1]["homophily_color"] != G.nodes[node2]["homophily_color"]):
+            cross_colored += 1
+
+    i = 0
+    for graph_node in G.nodes():
+        if (G.nodes[graph_node]["homophily_color"] == "red"):
+            red_nodes += 1
+        else:
+            blue_nodes += 1
+    # To check the "tolerance", (1/number_edges)^2
+    homophily_tolerance = (1/total_edges_n)**2
+
+    twoTimespTimesq = 2 * (red_nodes/total_edges_n) * (blue_nodes/total_edges_n)
+
+    cross_dividedby_total = cross_colored/total_edges_n
+
+    if (twoTimespTimesq + homophily_tolerance) < cross_dividedby_total:
+        print("THERE IS EVIDENCE OF HOMOPHILY!")
+        print("2*p*q:",twoTimespTimesq,"+ (1/n)^2",homophily_tolerance,"=",twoTimespTimesq+homophily_tolerance)
+        print("IS LESS THAN")
+        print("Cross Colored Edges Divided by Total Edges:",cross_dividedby_total,"\n")
+    else:
+        print("NO EVIDENCE OF HOMOPHILY")
+        print("2*p*q:",twoTimespTimesq,"+ (1/n)^2",homophily_tolerance,"=",twoTimespTimesq+homophily_tolerance)
+        print("IS GREATER THAN")
+        print("Cross Colored Edges Divided by Total Edges:",cross_dividedby_total,"\n")
+    
     return G
 
 # Adding "+" or "-" to each edge
@@ -455,8 +509,16 @@ def selection(selection: str, G) -> None:
 def main():
     # Creating a gloabal G, acting as memory
     G = nx.empty_graph()
-    
-    
+    # Initializing now so it can be used later in shortest path
+    G.graph["short_path"] = []
+    # Initializing now so it can be used in cluster enabling and disabling
+    G.graph["cluster_enable"] = False
+    G.graph["cluster_node_sizes"] = []
+    G.graph["cluster_node_colors"] = []
+    # Initializing now so it can be used in neighborhood enbaling and disabling
+    G.graph["neighbor_enable"] = False
+    G.graph["neighbor_edge_colors"] = {}
+
     option = '1'
     while (option != 'x'):
         menu()
