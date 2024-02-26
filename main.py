@@ -255,7 +255,7 @@ def plot_cluster(G):
 
         # Defined max and min nodes as 500 and 1000 pixels
         MIN_PIXEL = 500
-        MAX_PIXEL = 1000
+        MAX_PIXEL = 600
 
         # Saving node's sizes and RGB value to lists to graph later
         sizes = []
@@ -353,7 +353,9 @@ def neighborhood_overlap(G):
             RGB = (int(pv * 254)/255,254/255,0) # type casting int(R) since may be int
             colors.append(RGB)
 
-        # Nodes is a tuple of u,v edges saved as (u,v)
+        # Nodes is a tuple of u,v edges saved as (u,v) as a key
+        # the value is an generator iterable object returned by networkx's common neighbors method
+        # which can be accessed through a for loop as shown below
         for nodes in G.edges():
             common_neighbors.update({nodes:nx.common_neighbors(G,nodes[0],nodes[1])})
 
@@ -363,8 +365,16 @@ def neighborhood_overlap(G):
         # Drawing the main graph
         nx.draw(G, pos, with_labels=True)
         if (G.graph["neighbor_enable"] == True):
+            # Getting the nodes and common neighbors of those nodes (where nodes u,v are in a tuple (u,v))
+            # and common neighbors seem to be a tuple (in documentation says that its an iterator as the return type)
+            # from documentation: return (w for w in G[u] if w in G[v] and w not in (u, v))
+            # https://networkx.org/documentation/networkx-1.9.1/_modules/networkx/classes/function.html
             for nodes, common_neigh in common_neighbors.items():
+                # Goes through all the neighbor nodes between nodes u and v, and colors them based on the colors defined above
+                # same as the coefficient cluster colors
                 for common in common_neigh:
+                    # nodes[0] represents node u, nodes[1] represents node v, and common is the neighbor of both of them,
+                    # so those edges are colored the same
                     nx.draw_networkx_edges(G, pos, edgelist = [(nodes[0],common),(nodes[1],common)], edge_color = colors)
         plt.show()
 
