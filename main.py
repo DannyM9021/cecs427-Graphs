@@ -254,8 +254,8 @@ def plot_cluster(G):
         maximum_coeff = max(clustering_coefficients.values())
 
         # Defined max and min nodes as 500 and 1000 pixels
-        MIN_PIXEL = 500
-        MAX_PIXEL = 600
+        MIN_PIXEL = 300
+        MAX_PIXEL = 2000
 
         # Saving node's sizes and RGB value to lists to graph later
         sizes = []
@@ -269,13 +269,13 @@ def plot_cluster(G):
 
                 # Calculating the size of the node using the proportional coefficient and 
                 # formula from instructions
-                nodev_size = MIN_PIXEL + pv * (maximum_coeff - minimum_coeff)
+                nodev_size = MIN_PIXEL + pv * (MAX_PIXEL - MIN_PIXEL)
                 sizes.append(nodev_size)
 
                 # RGB Color where R = pv * 254, G = 254, B = 0 (according to instructions)
                 # Dividing by 255 to normalize, since matplotlib requires them to be in the range between 0 and 1
                 # https://matplotlib.org/stable/users/explain/colors/colors.html
-                RGB = (int(pv * 254)/255,254/255,0) # type casting int(R) since may be int
+                RGB = (abs(int(pv * 254))/255,254/255,0) # type casting int(R) since may be int
                 colors.append(RGB)
             G.graph["cluster_node_sizes"] = sizes
             G.graph["cluster_node_colors"] = colors
@@ -338,20 +338,23 @@ def neighborhood_overlap(G):
     minimum_coeff = min(clustering_coefficients.values()) + 0.00000001 # Adding a super small constant to prevent divide by 0
     maximum_coeff = max(clustering_coefficients.values())
 
-    colors = []
+    colors = {}
 
 
     try:
         # From Cluster Coefficient Function
         for nodev, coeff in clustering_coefficients.items():
+            print("NODE",nodev)
+            print("COEFF",coeff)
             # Calculating the proportional coefficient using formula given from instructions
             pv = (coeff - minimum_coeff)/(maximum_coeff- minimum_coeff)
+            print("PV VALUE",pv)
 
             # RGB Color where R = pv * 254, G = 254, B = 0 (according to instructions)
             # Dividing by 255 to normalize, since matplotlib requires them to be in the range between 0 and 1
             # https://matplotlib.org/stable/users/explain/colors/colors.html
-            RGB = (int(pv * 254)/255,254/255,0) # type casting int(R) since may be int
-            colors.append(RGB)
+            RGB = (abs(int(pv * 254))/255,254/255,0) # type casting int(R) since may be int
+            colors.update({nodev:RGB})
 
         # Nodes is a tuple of u,v edges saved as (u,v) as a key
         # the value is an generator iterable object returned by networkx's common neighbors method
@@ -375,7 +378,7 @@ def neighborhood_overlap(G):
                 for common in common_neigh:
                     # nodes[0] represents node u, nodes[1] represents node v, and common is the neighbor of both of them,
                     # so those edges are colored the same
-                    nx.draw_networkx_edges(G, pos, edgelist = [(nodes[0],common),(nodes[1],common)], edge_color = colors)
+                    nx.draw_networkx_edges(G, pos, edgelist = [(nodes[0],common),(nodes[1],common)], edge_color = colors[nodes[0]])
         plt.show()
 
     # Catching any unwanted exception
@@ -437,7 +440,19 @@ def homophily(G):
         print("2*p*q:",twoTimespTimesq,"+ (1/n)^2",homophily_tolerance,"=",twoTimespTimesq+homophily_tolerance)
         print("IS GREATER THAN")
         print("Cross Colored Edges Divided by Total Edges:",cross_dividedby_total,"\n")
-    
+
+    # Outputting the Homophily Graph
+    pos = nx.spring_layout(G) # Defines position of all nodes
+
+    # Temporary color list for the nodes
+    colors = []
+    for graph_node in G.nodes():
+        colors.append(G.nodes[graph_node]["homophily_color"])
+    # https://networkx.org/documentation/stable/reference/generated/networkx.drawing.nx_pylab.draw.html 
+    nx.draw(G, pos, with_labels=True, node_color=colors)
+
+    # Plotting the graph
+    plt.show()
     return G
 
 # Adding "+" or "-" to each edge
