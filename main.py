@@ -344,11 +344,8 @@ def neighborhood_overlap(G):
     try:
         # From Cluster Coefficient Function
         for nodev, coeff in clustering_coefficients.items():
-            print("NODE",nodev)
-            print("COEFF",coeff)
             # Calculating the proportional coefficient using formula given from instructions
             pv = (coeff - minimum_coeff)/(maximum_coeff- minimum_coeff)
-            print("PV VALUE",pv)
 
             # RGB Color where R = pv * 254, G = 254, B = 0 (according to instructions)
             # Dividing by 255 to normalize, since matplotlib requires them to be in the range between 0 and 1
@@ -390,7 +387,7 @@ def neighborhood_overlap(G):
 # Homophily of a graph
 def homophily(G):
     # Random p value will be generated using python's random module
-    probability_p = random.uniform(0,1)
+    probability_p = float(input("Please enter a p value between 0 and 1: "))
 
     # Going through all the nodes in the Graph and assigning either red or blue
     # depending on more random events
@@ -403,7 +400,7 @@ def homophily(G):
     # Using Networkx's assortativiy coefficient function, giving homophily_color
     # as a parameter to use it and find homophily
     homophily = nx.attribute_assortativity_coefficient(G,"homophily_color")
-    print("According to Networkx Assortativity Function, coefficient is:", homophily,"\n")
+    print("\nAccording to Networkx Assortativity Function, coefficient is:", homophily,"\n")
 
     cross_colored = 0
     red_nodes = 0
@@ -457,6 +454,24 @@ def homophily(G):
 
 # Adding "+" or "-" to each edge
 def balanced_graph(G):
+    G.graph["balance"] = {}
+    p = float(input("Please enter a p value between 0 and 1: "))
+
+    for nodes in G.edges():
+        random_num = random.uniform(0,1)
+        if random_num < p:
+            G.graph["balance"].update({nodes:"+"})
+        else:
+            G.graph["balance"].update({nodes:"-"})
+
+    # Plotting the graph now!
+    # Defining position of the nodes
+    pos = nx.spring_layout(G)
+    nx.draw(G, pos, with_labels=True,node_size=500)
+    nx.draw_networkx_edge_labels(G, pos, edge_labels=G.graph["balance"], font_size=20, font_color="red")
+
+    # Plotting the graph
+    plt.show()
     print("Balancing")
     return G
 
