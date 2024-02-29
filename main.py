@@ -7,6 +7,9 @@ import networkx as nx
 import numpy as np
 import matplotlib.pyplot as plt
 import random
+# importing for balancing graph
+import dimod as di
+import dwave_networkx as dnx
 
 # Making a global variable for shortest path
 short = []
@@ -199,15 +202,18 @@ def plot_shortest(G):
             print("OPTION NOT VALID\n")
             return G
 
-    # Helps set position of graph for node and edges
-    pos = nx.spring_layout(G)
-    nx.draw_networkx(G, pos)
-    # Plots shortest path ONLY if it exists
-    if G.graph["short_path"] != []:
-        print("IN HERE")
-        short_path_edges = list(zip(short, short[1:]))
-        nx.draw_networkx_nodes(G, pos, nodelist=short, node_color='r')
-        nx.draw_networkx_edges(G, pos, edgelist=short_path_edges, edge_color='r', width=5)
+    try:
+        # Helps set position of graph for node and edges
+        pos = nx.spring_layout(G)
+        nx.draw_networkx(G, pos)
+        # Plots shortest path ONLY if it exists
+        if G.graph["short_path"] != []:
+            print("IN HERE")
+            short_path_edges = list(zip(short, short[1:]))
+            nx.draw_networkx_nodes(G, pos, nodelist=short, node_color='r')
+            nx.draw_networkx_edges(G, pos, edgelist=short_path_edges, edge_color='r', width=5)
+    except Exception as e:
+        print("Something went wrong:",e)
     # Plotting the graph with equal axis
     plt.axis('equal')
     plt.show()
@@ -389,64 +395,72 @@ def homophily(G):
     # Random p value will be generated using python's random module
     probability_p = float(input("Please enter a p value between 0 and 1: "))
 
-    # Going through all the nodes in the Graph and assigning either red or blue
-    # depending on more random events
-    for graph_node in G.nodes():
-        random_number = random.uniform(0,1) 
-        if random_number < probability_p:
-            G.nodes[graph_node]["homophily_color"] = "red"
+    # Validating whether p is in range of 0 and 1
+    if (p > 1) or (p < 0):
+        print("Not within range of 0 and 1. Now exiting...")
+        return G
+
+    try:
+        # Going through all the nodes in the Graph and assigning either red or blue
+        # depending on more random events
+        for graph_node in G.nodes():
+            random_number = random.uniform(0,1) 
+            if random_number < probability_p:
+                G.nodes[graph_node]["homophily_color"] = "red"
+            else:
+                G.nodes[graph_node]["homophily_color"] = "blue"
+        # Using Networkx's assortativiy coefficient function, giving homophily_color
+        # as a parameter to use it and find homophily
+        homophily = nx.attribute_assortativity_coefficient(G,"homophily_color")
+        print("\nAccording to Networkx Assortativity Function, coefficient is:", homophily,"\n")
+
+        cross_colored = 0
+        red_nodes = 0
+        blue_nodes = 0
+        total_edges_n = 0
+        # Going through all of the edges and checking if the next node is a different color
+        for graph_edge in G.edges():
+            total_edges_n += 1
+            node1 = graph_edge[0]
+            node2 = graph_edge[1]
+            if (G.nodes[node1]["homophily_color"] != G.nodes[node2]["homophily_color"]):
+                cross_colored += 1
+
+        i = 0
+        for graph_node in G.nodes():
+            if (G.nodes[graph_node]["homophily_color"] == "red"):
+                red_nodes += 1
+            else:
+                blue_nodes += 1
+        # To check the "tolerance", (1/number_edges)^2
+        homophily_tolerance = (1/total_edges_n)**2
+
+        twoTimespTimesq = 2 * (red_nodes/total_edges_n) * (blue_nodes/total_edges_n)
+
+        cross_dividedby_total = cross_colored/total_edges_n
+
+        if (twoTimespTimesq + homophily_tolerance) < cross_dividedby_total:
+            print("THERE IS EVIDENCE OF HOMOPHILY!")
+            print("2*p*q:",twoTimespTimesq,"+ (1/n)^2",homophily_tolerance,"=",twoTimespTimesq+homophily_tolerance)
+            print("IS LESS THAN")
+            print("Cross Colored Edges Divided by Total Edges:",cross_dividedby_total,"\n")
         else:
-            G.nodes[graph_node]["homophily_color"] = "blue"
-    # Using Networkx's assortativiy coefficient function, giving homophily_color
-    # as a parameter to use it and find homophily
-    homophily = nx.attribute_assortativity_coefficient(G,"homophily_color")
-    print("\nAccording to Networkx Assortativity Function, coefficient is:", homophily,"\n")
+            print("NO EVIDENCE OF HOMOPHILY")
+            print("2*p*q:",twoTimespTimesq,"+ (1/n)^2",homophily_tolerance,"=",twoTimespTimesq+homophily_tolerance)
+            print("IS GREATER THAN")
+            print("Cross Colored Edges Divided by Total Edges:",cross_dividedby_total,"\n")
 
-    cross_colored = 0
-    red_nodes = 0
-    blue_nodes = 0
-    total_edges_n = 0
-    # Going through all of the edges and checking if the next node is a different color
-    for graph_edge in G.edges():
-        total_edges_n += 1
-        node1 = graph_edge[0]
-        node2 = graph_edge[1]
-        if (G.nodes[node1]["homophily_color"] != G.nodes[node2]["homophily_color"]):
-            cross_colored += 1
+        # Outputting the Homophily Graph
+        pos = nx.spring_layout(G) # Defines position of all nodes
 
-    i = 0
-    for graph_node in G.nodes():
-        if (G.nodes[graph_node]["homophily_color"] == "red"):
-            red_nodes += 1
-        else:
-            blue_nodes += 1
-    # To check the "tolerance", (1/number_edges)^2
-    homophily_tolerance = (1/total_edges_n)**2
-
-    twoTimespTimesq = 2 * (red_nodes/total_edges_n) * (blue_nodes/total_edges_n)
-
-    cross_dividedby_total = cross_colored/total_edges_n
-
-    if (twoTimespTimesq + homophily_tolerance) < cross_dividedby_total:
-        print("THERE IS EVIDENCE OF HOMOPHILY!")
-        print("2*p*q:",twoTimespTimesq,"+ (1/n)^2",homophily_tolerance,"=",twoTimespTimesq+homophily_tolerance)
-        print("IS LESS THAN")
-        print("Cross Colored Edges Divided by Total Edges:",cross_dividedby_total,"\n")
-    else:
-        print("NO EVIDENCE OF HOMOPHILY")
-        print("2*p*q:",twoTimespTimesq,"+ (1/n)^2",homophily_tolerance,"=",twoTimespTimesq+homophily_tolerance)
-        print("IS GREATER THAN")
-        print("Cross Colored Edges Divided by Total Edges:",cross_dividedby_total,"\n")
-
-    # Outputting the Homophily Graph
-    pos = nx.spring_layout(G) # Defines position of all nodes
-
-    # Temporary color list for the nodes
-    colors = []
-    for graph_node in G.nodes():
-        colors.append(G.nodes[graph_node]["homophily_color"])
-    # https://networkx.org/documentation/stable/reference/generated/networkx.drawing.nx_pylab.draw.html 
-    nx.draw(G, pos, with_labels=True, node_color=colors)
+        # Temporary color list for the nodes
+        colors = []
+        for graph_node in G.nodes():
+            colors.append(G.nodes[graph_node]["homophily_color"])
+        # https://networkx.org/documentation/stable/reference/generated/networkx.drawing.nx_pylab.draw.html 
+        nx.draw(G, pos, with_labels=True, node_color=colors)
+    except Exception as e:
+        print("Something went wrong:",e)
 
     # Plotting the graph
     plt.show()
@@ -457,22 +471,53 @@ def balanced_graph(G):
     G.graph["balance"] = {}
     p = float(input("Please enter a p value between 0 and 1: "))
 
-    for nodes in G.edges():
-        random_num = random.uniform(0,1)
-        if random_num < p:
-            G.graph["balance"].update({nodes:"+"})
-        else:
-            G.graph["balance"].update({nodes:"-"})
+    # Validating whether p is in range of 0 and 1
+    if (p > 1) or (p < 0):
+        print("Not within range of 0 and 1. Now exiting...\n")
+        return G
 
+    try:
+        sampler = di.RandomSampler()
+        # Added this dictionary so I can use to determine if 
+        # there are any "frustrated" nodes
+        weighted_nodes = {}
+        for nodes in G.edges():
+            random_num = random.uniform(0,1)
+            if random_num < p:
+                G.graph["balance"].update({nodes:"+"})
+                weighted_nodes.update({nodes:int(1)})
+            else:
+                G.graph["balance"].update({nodes:"-"})
+                weighted_nodes.update({nodes:int(-1)})
+
+        # Adding the weight of the nodes using networkx's set_edge_attribute function
+        # https://networkx.org/documentation/stable/reference/generated/networkx.classes.function.set_edge_attributes.html
+        nx.set_edge_attributes(G,weighted_nodes,"sign")
+
+        # Using DWave's example as a reference to find an inbalance, finding "frustrated edges"
+        # https://docs.ocean.dwavesys.com/en/stable/docs_dnx/reference/algorithms/generated/dwave_networkx.algorithms.social.structural_imbalance.html
+        frustration, node_colors = dnx.structural_imbalance(G,sampler)
+        print("FRUSTRATION",frustration)
+
+        # Determininig if the Graph is balanced
+        # Checking if number of negative signs is even (if odd then not a balanced graph)
+        total_negatives = 0
+        for graph_nodes in G.edges():
+            if (G.graph["balance"][graph_nodes] == "-"):
+                total_negatives += 1
+    except Exception as e:
+        print("Something went wrong:",e)
+
+    
     # Plotting the graph now!
     # Defining position of the nodes
     pos = nx.spring_layout(G)
     nx.draw(G, pos, with_labels=True,node_size=500)
     nx.draw_networkx_edge_labels(G, pos, edge_labels=G.graph["balance"], font_size=20, font_color="red")
 
+    
     # Plotting the graph
     plt.show()
-    print("Balancing")
     return G
 
 # Simple selction menu to handle user's input
