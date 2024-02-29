@@ -1,6 +1,6 @@
 # Daniel Moreno 
 # CECS 427-01 Dynamic Networks
-# Due Date: February 22, 2024
+# Due Date: February 29, 2024
 
 # Importing networkx and numpy as recommended by the documentation
 import networkx as nx
@@ -477,7 +477,7 @@ def balanced_graph(G):
         return G
 
     try:
-        sampler = di.RandomSampler()
+        sampler = di.ExactSolver()
         # Added this dictionary so I can use to determine if 
         # there are any "frustrated" nodes
         weighted_nodes = {}
@@ -500,11 +500,13 @@ def balanced_graph(G):
         print("FRUSTRATION",frustration)
 
         # Determininig if the Graph is balanced
-        # Checking if number of negative signs is even (if odd then not a balanced graph)
-        total_negatives = 0
-        for graph_nodes in G.edges():
-            if (G.graph["balance"][graph_nodes] == "-"):
-                total_negatives += 1
+        # If there are no frustrated nodes, then graph should be balanced
+        # If frustration dictionary is empty, then graph is balanced, using method from stackoverflow to check if empty
+        # https://stackoverflow.com/questions/23177439/how-to-check-if-a-dictionary-is-empty
+        if (not frustration):
+            print("Graph IS Balanced!")
+        else:
+            print("Graph IS NOT Balanced")
     except Exception as e:
         print("Something went wrong:",e)
 
