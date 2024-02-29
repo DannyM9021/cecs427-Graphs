@@ -1,0 +1,23 @@
+# Daniel Moreno
+# CECS 427-01 Dynamic Networks
+# Due Date: February 29, 2024
+
+    This time around, I felt like I had a better grasp of the assignment since it was just building up from the last assignment. However, there were still some things that
+I was having trouble with. The way I approached this lab was by, first of all, reading the instructions on what needed to be implemented for this assignment (as some of the
+implementation were already done from the previous assignment). I started by updating the options menu and then creating a function for each of the new requirements that were
+listed. Then to actually implement each of the functions, I looked to the Networkx documentation to see if they already had a partial or even complete implementation of what 
+was being asked, that way I could avoid making simple mistakes in some of the algorithms. I noticed that Networkx did have mostly everything that I needed, I just needed to 
+read the documentation of that certain function to know what the parameters of that function was and what the return type was, so I can later use the results for output and
+graphing purposes.
+    Some difficulties I was having was choosing the "correct" functions from Networkx. As mentioned, most of the implementation was done by Networkx, but I needed to check 
+which functions specifically would work for my specific use case. Some functions were very similar, but at the end of the day I chose the easiest to implement, and the one
+that seemed to have the best compatibility for this assignment. However, most of the frustration came from the error messages that were produced by functions provided
+by Networkx. Some of the messages were very vague and I needed to look at outside resources such as StackOverflow to see how to fix the error. However, it seems that not 
+many people had the issues I was facing, so if I couldn't find the answer, I had to go back to my code and analyze line by line (sometimes adding print statements for debugging,
+really bad way of doing it, but it was working) and see what the error was. If I still couldn't find out why it wasn't working, I felt like it may not be useful for my use case,
+so I would choose a similar function that fulfills almost the same thing, but with more of my implementation. Final alternative, was to implement that function manually (which didn't
+happen very often).
+    I did not need to implement many extra features other than the one's that were outlined in the instructions. I did have to modify some of the previous assignment's functions as now
+we also needed to enable and disable some of the functions to allow the user to choose whether to enable a certain function (such as enabling the cluster coefficient when graphing). All
+in all, I do believe that this assignment was a bit easier than the first time as I already knew what to expect and I had a better idea of how to implement some of the functions. I also 
+knew that I had tools that I can use such as the Networkx library and documentaion, StackOverflow, and YouTube to help me understand how to implement and how to solve the problems.
