@@ -1,6 +1,6 @@
 # Daniel Moreno 
 # CECS 427-01 Dynamic Networks
-# Due Date: February 29, 2024
+# Due Date: March 19, 2024
 
 # Importing networkx and numpy as recommended by the documentation
 import networkx as nx
@@ -396,7 +396,7 @@ def homophily(G):
     probability_p = float(input("Please enter a p value between 0 and 1: "))
 
     # Validating whether p is in range of 0 and 1
-    if (p > 1) or (p < 0):
+    if (probability_p > 1) or (probability_p < 0):
         print("Not within range of 0 and 1. Now exiting...")
         return G
 
