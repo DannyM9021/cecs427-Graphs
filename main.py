@@ -14,6 +14,9 @@ import dwave_networkx as dnx
 # Making a global variable for shortest path
 short = []
 
+# Making global variable Digraph to store digraph
+digraph_storage = nx.empty_graph()
+
 # Printing a CLI menu so user knows the options
 def menu():
     print("MAIN MENU")
@@ -23,6 +26,7 @@ def menu():
     print("4. Algorithms")
     print("5. Plot Graph")
     print("6. Assign and Validate Attributes")
+    print("7. Read a DiGraph")
     print("x. Exit\n")
 
 # As part of new assignment, submenu for some of the new features
@@ -55,10 +59,47 @@ def read_graph(G):
         return G
     return G
 
+# Assignment 3: Read a digraph
+def read_digraph(G):
+    digraph = []
+    temp = []
+    File_name = input("Please input a file to read from: ")
+    try:
+        with open(File_name, 'r') as file:
+            # Going through each line of file to parse informaiton in format:
+            # source, destination, a, b
+            for line in file:
+                # File will have spaces separating the terms
+                temp_line = line.split(" ")
+                # Only getting the first 3 as no special case
+                for i in range(3):
+                    temp.append(temp_line[i])
+                # On last term, remove "\n" escape character
+                temp.append(temp_line[3].split("\n")[0])
+                # Adding to digraph storage
+                digraph.append(temp)
+                # Re-initializing list
+                temp = []
+            file.close()
+            # Accessing Global Digraph Graph storage
+            global digraph_storage
+            digraph_storage = digraph
+            print("Digraph read and saved to memory!\n")
+            return G
+    # Handling exception if no file exists
+    except FileNotFoundError:
+        print("File not found!\n")
+        return G
+
 # Saves a graph from memory to the external file provided by the user's input
 def save_graph(G):
     File_name = input("Please input a file to save to: ")
     try:
+        # If graph is directed will save accordingly
+        if (nx.is_directed(G)):
+            print("DIRECTED")
+            return G
+        # Saves UNDIRECTED GRAPH, Assignment 1
         with open(File_name, 'w') as file:
             nx.write_adjlist(G, File_name)
             file.close()
@@ -585,6 +626,10 @@ def selection(selection: str, G) -> None:
             return balanced_graph(G)
         else:
             print("Invalid Option\n")
+
+    elif (selection == '7'):
+        print("Now Reading a Digraph...\n")
+        return read_digraph(G)
 
     elif (selection == 'x'):
         print("Now Exiting...\n")
