@@ -7,6 +7,7 @@ import networkx as nx
 import numpy as np
 import matplotlib.pyplot as plt
 import random
+import math
 # importing for balancing graph
 import dimod as di
 import dwave_networkx as dnx
@@ -14,8 +15,8 @@ import dwave_networkx as dnx
 # Making a global variable for shortest path
 short = []
 
-# Making global variable Digraph to store digraph
-digraph_storage = nx.empty_graph()
+# Making global variable Digraph to store digraph, initializing to empty list
+digraph_storage = []
 
 # Printing a CLI menu so user knows the options
 def menu():
@@ -36,7 +37,8 @@ def sub_menu(selection:str):
         print("2. Karate-Club Graph\n")
     elif (selection == '4'):
         print("1. Shortest Path")
-        print("2. Partition G\n")
+        print("2. Partition G")
+        print("3. Travel Equilibrium and Social Optimal\n")
     elif (selection == '5'):
         print("1. The Shortest Path")
         print("2. Cluster Coefficients")
@@ -93,22 +95,34 @@ def read_digraph(G):
 
 # Saves a graph from memory to the external file provided by the user's input
 def save_graph(G):
+    selection = int(input("\n1. Unidirectional Graph\n2. Directional Graph\nWhich type of graph do you want to save?: "))
     File_name = input("Please input a file to save to: ")
     try:
         # If graph is directed will save accordingly
-        if (nx.is_directed(G)):
-            print("DIRECTED")
-            return G
+        if (selection == 2):
+            digraph_string = ""
+            global digraph_storage
+            for row in digraph_storage:
+                for index in range(len(row)):
+                    digraph_string += str(row[index]) + " "
+                digraph_string += '\n'
+            print(digraph_string)
+            # Now saving from global to file
+            with open(File_name, 'w') as file:
+                file.write(digraph_string)
+                file.close()
+                print("Directed Graph saved into file!\n")
+                return G
         # Saves UNDIRECTED GRAPH, Assignment 1
         with open(File_name, 'w') as file:
             nx.write_adjlist(G, File_name)
             file.close()
-            print("Graph saved into file!\n")
+            print("Undirected Graph saved into file!\n")
+            return G
     # Handles exception if no file exists
     except FileNotFoundError:
         print("File not found!\n")
         return G
-    return G
 
 # Creates an Erdos-Reny graph using n nodes and a closeness coefficient provided by a user
 def create_graph(G):
@@ -212,6 +226,49 @@ def parition_graph(G):
     except Exception as e:
         print("Exception:", e,"; Partition failed!\n")
 
+    return G
+
+# Assignment 3 Finding Travel Equilibrium and Social Optimality
+def equilibrium_and_optima(G):
+    global digraph_storage
+    total_drivers = int(input("Number of Drivers: "))
+    source = digraph_storage[0][0] # Start node is 1st row, 1st entry
+    destination = digraph_storage[-1][1] # Destination node is last row, 2nd entry
+
+    # Social Optimal
+    top_route = math.ceil(total_drivers/2)
+    bottom_route = math.floor(total_drivers/2)
+    top_eq1 = int(digraph_storage[0][2]) * total_drivers + int(digraph_storage[0][3]) # Gets weights from digraph memory (3rd and 4th positions)
+    top_eq2 = int(digraph_storage[1][2]) * total_drivers + int(digraph_storage[1][3]) # Gets weights from digraph memory (3rd and 4th positions)
+    bottom_eq1 = int(digraph_storage[3][2]) * total_drivers + int(digraph_storage[3][3]) # Gets weights from digraph memory (3rd and 4th positions)
+    bottom_eq2 = int(digraph_storage[4][2]) * total_drivers + int(digraph_storage[4][3]) # Gets weights from digraph memory (3rd and 4th positions)
+    total_top = top_eq1 + top_eq2
+    total_bottom = bottom_eq1 + bottom_eq2
+    social_optimal = total_top + total_bottom
+    print("Social Optimal:",social_optimal)
+
+    # Nash Equilibrium
+    nash_equilibrium = int(digraph_storage[0][2]) * total_drivers + int(digraph_storage[0][3]) * 2 # Nash Equilibrium when all drivers go same route: top, middle, bottom
+    true_cost = nash_equilibrium * total_drivers
+    print("Nash Equilibrium",true_cost)
+    print()
+
+    try:
+        # Plotting 
+        social_nash_graph = nx.DiGraph()
+        social_nash_graph.add_node(0, pos=(0,0))
+        social_nash_graph.add_node(1, pos=(1,1))
+        social_nash_graph.add_node(2, pos=(1,-1))
+        social_nash_graph.add_node(3, pos=(2,0))
+        social_nash_graph.add_weighted_edges_from([(0, 1, str(top_eq1)), (0, 2, str(bottom_eq1)), (1, 2, str(0)), (1, 3, str(top_eq2)), (2,3,str(bottom_eq2))])
+        pos = nx.get_node_attributes(social_nash_graph,'pos')
+        edge_weights = nx.get_edge_attributes(social_nash_graph,'weight')
+        nx.draw_networkx_edge_labels(social_nash_graph,pos,edge_labels=edge_weights)
+        nx.draw_networkx(social_nash_graph, pos)
+        plt.axis('equal')
+        plt.show()
+    except Exception as e:
+        print(e)
     return G
 
 # Plots the graph G and highlights shortest path if it exists
@@ -597,6 +654,8 @@ def selection(selection: str, G) -> None:
         elif (new =='2'):
             print("Now Partitioning Graph...\n")
             return parition_graph(G)
+        elif (new == '3'):
+            return equilibrium_and_optima(G)
         else:
             print("Invalid Option\n")
 
