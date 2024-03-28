@@ -249,7 +249,7 @@ def equilibrium_and_optima(G):
 
     # Nash Equilibrium
     nash_equilibrium = int(digraph_storage[0][2]) * total_drivers + int(digraph_storage[0][3]) * 2 # Nash Equilibrium when all drivers go same route: top, middle, bottom
-    true_cost = nash_equilibrium * total_drivers
+    true_cost = nash_equilibrium * total_drivers/2
     print("Nash Equilibrium",true_cost)
     print()
 
@@ -260,12 +260,16 @@ def equilibrium_and_optima(G):
         social_nash_graph.add_node(1, pos=(1,1))
         social_nash_graph.add_node(2, pos=(1,-1))
         social_nash_graph.add_node(3, pos=(2,0))
-        social_nash_graph.add_weighted_edges_from([(0, 1, str(top_eq1)), (0, 2, str(bottom_eq1)), (1, 2, str(0)), (1, 3, str(top_eq2)), (2,3,str(bottom_eq2))])
+        social_nash_graph.add_weighted_edges_from([(0, 1, str(digraph_storage[0][2]+'x + '+digraph_storage[0][3])), (0, 2, str(digraph_storage[1][2]+'x + '+digraph_storage[1][3])), (1, 2,  str(digraph_storage[2][2]+'x + '+digraph_storage[2][3])), (1, 3,  str(digraph_storage[3][2]+'x + '+digraph_storage[3][3])), (2,3,  str(digraph_storage[4][2]+'x + '+digraph_storage[4][3]))])
         pos = nx.get_node_attributes(social_nash_graph,'pos')
         edge_weights = nx.get_edge_attributes(social_nash_graph,'weight')
         nx.draw_networkx_edge_labels(social_nash_graph,pos,edge_labels=edge_weights)
         nx.draw_networkx(social_nash_graph, pos)
         plt.axis('equal')
+        plt.title("Social Optimal and Nash Equilibrium Digraph")
+        plt.text(0.1,0.9, "Number of Drivers: "+str(total_drivers), fontsize=15, transform=plt.gca().transAxes)
+        plt.text(0.1,0.85, "Social Optimal: "+str(social_optimal), fontsize=15, transform=plt.gca().transAxes)
+        plt.text(0.1,0.8, "Nash Equilibrium: "+str(int(true_cost)), fontsize=15, transform=plt.gca().transAxes)
         plt.show()
     except Exception as e:
         print(e)
