@@ -1,0 +1,20 @@
+# Daniel Moreno
+# CECS 427-01 Dynamic Networks
+# Due Date: March 27, 2024
+
+  For this assignment I followed pretty much the same approach I've used for the other two assignments. I tried to research a bit before attempting to implement 
+what was being asked. However, this time I felt like I didn't have much time due to the midterms and assignments that I also needed to prepare for this same week.
+Regardless, I tried to do what I could and I was able to successfully implement the program to the best of my understanding. There may be some errors in calculations
+as I tried to implment as quickly as possible and used the methods I used to understand the concept (which I don't know if they are completely correct).
+  This time I didn't use much of the networkx library, as I tried to implement things mostly on my own, since I thought I was able to implement it a certain way.
+For instance, the way I read a digraph file, I decided to save it as a list of lists in global memory. Maybe it wasn't the most intuitive approach but it seemed 
+to work. And this transitioned well into the next part, which was saving a digraph from memory to an external file. Since I saved the graph as a list of lists, I just
+used a simple for loop to loop through the lists and appended the information to a string, which at the end was written to the file. Not to difficult.
+  I believe the part that was most troublesome was implementing the Social Optimal as well as the Nash Equilibrium. I'm not sure if I completely understood the concept,
+so I was having a bit of trouble trying to implement it. It didn't help that I was rushing to finish as well. The way I ended up implementing was kind of an approach we did
+in class. For the most part it seemed the social optimal was achieved by splitting the amount of drivers in half, half took top route, the other half took the bottom route.
+Similar with the Nash Equilibrium, I recall in class that most of the time (maybe because the graphs being used were similar), was to have all the drivers go the same route, 
+the top route, down the middle, and finally to the destination node. I'm not completely sure if that approach is correct for all graphs, but I do think it is correct for these
+kind of graphs, especially if the weights are just alternated.
+  Overall, I believe I could have done a bit better job, however, there were other things that got in the way. Maybe over the break I'll try to better understand these concepts
+so I know how to work. I will probably start on the next assignment early to make sure I understand what needs to be done.
