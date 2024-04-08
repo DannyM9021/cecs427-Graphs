@@ -176,7 +176,14 @@ def karate_club(G):
 
 # Creates Bigraph for assignment 4
 def create_bigraph(G):
-    print("In bigraph")
+    nodes_A = int(input("How many nodes in set A?: "))
+    nodes_B = int(input("How many nodes in set B?: "))
+    prob_p = float(input("Probability that edge (u,v) is created: "))
+    # Creating Random Bipartite Graph given user input
+    # https://networkx.org/documentation/stable/reference/algorithms/generated/networkx.algorithms.bipartite.generators.random_graph.html
+    global bigraph_storage
+    bigraph_storage = nx.bipartite.random_graph(nodes_A,nodes_B, prob_p)
+    print("Bigraph created successfully!\n")
 
 # Uses the shortest path algorithm using networkx's library
 def shortest_path(G):
