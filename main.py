@@ -1,6 +1,6 @@
 # Daniel Moreno 
 # CECS 427-01 Dynamic Networks
-# Due Date: March 19, 2024
+# Due Date: April 9, 2024
 
 # Importing networkx and numpy as recommended by the documentation
 import networkx as nx
@@ -11,12 +11,18 @@ import math
 # importing for balancing graph
 import dimod as di
 import dwave_networkx as dnx
+# In case needed for bipartite algorithms
+# https://networkx.org/documentation/stable/reference/algorithms/bipartite.html
+from networkx.algorithms import bipartite
 
 # Making a global variable for shortest path
 short = []
 
 # Making global variable Digraph to store digraph, initializing to empty list
 digraph_storage = []
+
+# Making global variable to store Bigraph for assignment 4
+bigraph_storage = []
 
 # Printing a CLI menu so user knows the options
 def menu():
@@ -34,7 +40,8 @@ def menu():
 def sub_menu(selection:str):
     if (selection == '3'):
         print("1. Random Erdos-Reny Graph")
-        print("2. Karate-Club Graph\n")
+        print("2. Karate-Club Graph")
+        print("3. Bipartite Graph\n")
     elif (selection == '4'):
         print("1. Shortest Path")
         print("2. Partition G")
@@ -166,6 +173,10 @@ def karate_club(G):
 
     print("Karate Graph successfully created and saved to memory\n")
     return G
+
+# Creates Bigraph for assignment 4
+def create_bigraph(G):
+    print("In bigraph")
 
 # Uses the shortest path algorithm using networkx's library
 def shortest_path(G):
@@ -645,6 +656,10 @@ def selection(selection: str, G) -> None:
         elif (new == '2'):
             print("Now creating Karate Club Graph...\n")
             return karate_club(G)
+
+        elif (new == '3'):
+            print("Now Creating Bipartite graph...")
+            return create_bigraph(G)
 
         else:
             print("Invalid Option\n")
