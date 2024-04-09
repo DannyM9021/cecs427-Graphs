@@ -23,6 +23,7 @@ digraph_storage = []
 
 # Making global variable to store Bigraph for assignment 4
 bigraph_storage = []
+market_graph_storage = []
 
 # Printing a CLI menu so user knows the options
 def menu():
@@ -195,11 +196,35 @@ def create_bigraph(G):
 def market_clearing(G):
     # Reading file path provided by user
     # Parsing through file to get necessary information
+    temp = []
+    buyer_pref = []
     file_path = input("Please input file path for market clearing: ")
     try:
         with open(file_path, 'r') as file:
             for line in file:
-                print(line)
+                temp.append(line.strip())
+            file.close()
+        num_houses = temp[0][0]
+        start_prices = temp[0][2:7].split(',')
+        for i in range(1,len(temp)):
+            buyer_pref.append(temp[i].split(','))
+
+        # Assigning bipartite graph
+        global market_graph_storage
+        market_graph_storage = nx.Graph()
+        # Assigning Seller's start prices
+        for i in range(0, int(num_houses)):
+            seller_id = str(i+1)
+            market_graph_storage.add_node(seller_id, bipartite=0, type="seller",start_price=start_prices[i])
+
+        # Assigning buyers preference list
+        for i, buyer_pref in enumerate(buyer_pref, start=int(num_houses)):
+            buyer_id = str(i+1)
+            market_graph_storage.add_node(buyer_id, bipartite=1, type = "buyer",preference = buyer_pref)
+        print(market_graph_storage)
+        for node, data in market_graph_storage.nodes(data=True):
+            print(f"Node: {node}, Attributes: {data}")
+        print("Disconnected Market Graph Created\n")
         return G
     # In case of error, exits without crashing
     except Exception as e:
