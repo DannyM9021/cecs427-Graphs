@@ -41,15 +41,20 @@ def sub_menu(selection:str):
     if (selection == '3'):
         print("1. Random Erdos-Reny Graph")
         print("2. Karate-Club Graph")
-        print("3. Bipartite Graph\n")
+        print("3. Bipartite Graph")
+        print("4. Market Clearing\n")
     elif (selection == '4'):
         print("1. Shortest Path")
         print("2. Partition G")
-        print("3. Travel Equilibrium and Social Optimal\n")
+        print("3. Travel Equilibrium and Social Optimal")
+        print("4. Perfect Matching")
+        print("5. Preferred-Seller Graph\n")
     elif (selection == '5'):
         print("1. The Shortest Path")
         print("2. Cluster Coefficients")
-        print("3. Neighborhood Overlaps\n")
+        print("3. Neighborhood Overlaps")
+        print("5. Bipartite Graph")
+        print("5. Preferred-Seller Graph\n")
     elif (selection == '6'):
         print("1. Homophily")
         print("2. Balanced Graph")
@@ -184,6 +189,22 @@ def create_bigraph(G):
     global bigraph_storage
     bigraph_storage = nx.bipartite.random_graph(nodes_A,nodes_B, prob_p)
     print("Bigraph created successfully!\n")
+    return G
+
+# Market CLearing Graph for assignment 4 (using file provided by professor)
+def market_clearing(G):
+    # Reading file path provided by user
+    # Parsing through file to get necessary information
+    file_path = input("Please input file path for market clearing: ")
+    try:
+        with open(file_path, 'r') as file:
+            for line in file:
+                print(line)
+        return G
+    # In case of error, exits without crashing
+    except Exception as e:
+        print("Market Clearing Error:", e)
+        return G
 
 # Uses the shortest path algorithm using networkx's library
 def shortest_path(G):
@@ -291,6 +312,16 @@ def equilibrium_and_optima(G):
         plt.show()
     except Exception as e:
         print(e)
+    return G
+
+# Perfect Matching Algorithm for assignment 4
+def perfect_match(G):
+    print("Perfect")
+    return G
+
+# Preferred Seller Graph for assignment 4
+def seller_graph(G):
+    print("Seller")
     return G
 
 # Plots the graph G and highlights shortest path if it exists
@@ -642,6 +673,16 @@ def balanced_graph(G):
     plt.show()
     return G
 
+# Plotting Bigraph Assignment 4
+def plot_bigraph(G):
+    print("Plot Bigraph")
+    return G
+
+# Plotting Preferred Seller Graph Assignment 4
+def plot_seller_graph(G):
+    print("Plot Sell")
+    return G
+
 # Simple selction menu to handle user's input
 def selection(selection: str, G) -> None:
 
@@ -668,6 +709,10 @@ def selection(selection: str, G) -> None:
             print("Now Creating Bipartite graph...")
             return create_bigraph(G)
 
+        elif (new == '4'):
+            print("Now creating Market Clearing Graph")
+            return market_clearing(G)
+
         else:
             print("Invalid Option\n")
 
@@ -682,6 +727,12 @@ def selection(selection: str, G) -> None:
             return parition_graph(G)
         elif (new == '3'):
             return equilibrium_and_optima(G)
+        elif (new == '4'):
+            print("Now finding perfect match...")
+            return perfect_match(G)
+        elif (new == '5'):
+            print("Now computing preferred seller graph...")
+            return seller_graph(G)
         else:
             print("Invalid Option\n")
 
@@ -697,6 +748,12 @@ def selection(selection: str, G) -> None:
         elif (new == '3'):
             print("Now Plotting Neighborhood Overlap...\n")
             return neighborhood_overlap(G)
+        elif (new == '4'):
+            print("Now Plotting Bipartite Graph...")
+            return plot_bigraph(G)
+        elif (new == '5'):
+            print("Now Plotting Preferred-Seller Graph...")
+            return plot_seller_graph(G)
         else:
             print("Invalid Option\n")
 
