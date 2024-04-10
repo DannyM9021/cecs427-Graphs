@@ -204,10 +204,17 @@ def market_clearing(G):
             for line in file:
                 temp.append(line.strip())
             file.close()
-        num_houses = temp[0][0]
+        # Parsing and assigning values
+        num_houses = int(temp[0][0])
         start_prices = temp[0][2:7].split(',')
+        for i in range(len(start_prices)):
+            start_prices[i] = int(start_prices[i])
+        # Starting at 1, since index 0 has num houses and start prices
         for i in range(1,len(temp)):
             buyer_pref.append(temp[i].split(','))
+        for i in range(len(buyer_pref)):
+            for j in range(len(buyer_pref[i])):
+                buyer_pref[i][j] = int(buyer_pref[i][j])
 
         # Assigning bipartite graph
         global market_graph_storage
@@ -341,7 +348,20 @@ def equilibrium_and_optima(G):
 
 # Perfect Matching Algorithm for assignment 4
 def perfect_match(G):
-    print("Perfect")
+    print("Match?")
+    global market_graph_storage
+    buyers = set()
+    sellers = set()
+    for node, data in market_graph_storage.nodes(data=True):
+        if data['type'] == "seller":
+            sellers.add(node)
+        else:
+            buyers.add(node)
+    # Used for existing algorithm in Networkx for Matching
+    # https://networkx.org/documentation/stable/reference/algorithms/generated/networkx.algorithms.bipartite.matching.hopcroft_karp_matching.html
+    perfect_matching = nx.bipartite.matching.hopcroft_karp_matching(market_graph_storage, top_nodes=sellers)
+    for seller, buyer in perfect_matching.items():
+        print("Seller:",seller, "Matches with Buyer", buyer)
     return G
 
 # Preferred Seller Graph for assignment 4
