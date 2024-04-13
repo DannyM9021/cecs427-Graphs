@@ -348,21 +348,28 @@ def equilibrium_and_optima(G):
 
 # Perfect Matching Algorithm for assignment 4
 def perfect_match(G):
-    print("Match?")
-    global market_graph_storage
-    buyers = set()
-    sellers = set()
-    for node, data in market_graph_storage.nodes(data=True):
-        if data['type'] == "seller":
-            sellers.add(node)
-        else:
-            buyers.add(node)
-    # Used for existing algorithm in Networkx for Matching
-    # https://networkx.org/documentation/stable/reference/algorithms/generated/networkx.algorithms.bipartite.matching.hopcroft_karp_matching.html
-    perfect_matching = nx.bipartite.matching.hopcroft_karp_matching(market_graph_storage, top_nodes=sellers)
-    for seller, buyer in perfect_matching.items():
-        print("Seller:",seller, "Matches with Buyer", buyer)
-    return G
+    try:
+        global bigraph_storage
+        buyers = set()
+        sellers = set()
+        for node, data in bigraph_storage.nodes(data=True):
+            if data['bipartite'] == 0:
+                sellers.add(node)
+            else:
+                buyers.add(node)
+        print(buyers)
+        print(sellers)
+        # Used for existing algorithm in Networkx for Matching
+        # https://networkx.org/documentation/stable/reference/algorithms/generated/networkx.algorithms.bipartite.matching.hopcroft_karp_matching.html
+        perfect_matching = nx.bipartite.matching.hopcroft_karp_matching(bigraph_storage, top_nodes=sellers)
+        print(perfect_matching)
+        for seller, buyer in perfect_matching.items():
+            print("Seller:",seller, "Matches with Buyer", buyer)
+        print()
+        return G
+    except Exception as e:
+        print(e)
+        return G
 
 # Preferred Seller Graph for assignment 4
 def seller_graph(G):
