@@ -350,23 +350,26 @@ def equilibrium_and_optima(G):
 def perfect_match(G):
     try:
         global bigraph_storage
+        # Making sure a bigraph exists
+        if (bigraph_storage == []):
+            print("Create a Bipartite Graph first please\n ")
+        # Creating two sets, to be able to match, between "buyers and sellers"
         buyers = set()
         sellers = set()
+        # Separates nodes based on if they are in the sellers or buyer's part of the graph
         for node, data in bigraph_storage.nodes(data=True):
             if data['bipartite'] == 0:
                 sellers.add(node)
             else:
                 buyers.add(node)
-        print(buyers)
-        print(sellers)
         # Used for existing algorithm in Networkx for Matching
         # https://networkx.org/documentation/stable/reference/algorithms/generated/networkx.algorithms.bipartite.matching.hopcroft_karp_matching.html
         perfect_matching = nx.bipartite.matching.hopcroft_karp_matching(bigraph_storage, top_nodes=sellers)
-        print(perfect_matching)
         for seller, buyer in perfect_matching.items():
             print("Seller:",seller, "Matches with Buyer", buyer)
         print()
         return G
+    # Returns any exception without crashing program
     except Exception as e:
         print(e)
         return G
