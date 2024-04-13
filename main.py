@@ -352,7 +352,8 @@ def perfect_match(G):
         global bigraph_storage
         # Making sure a bigraph exists
         if (bigraph_storage == []):
-            print("Create a Bipartite Graph first please\n ")
+            print("Create a Bipartite Graph first please!\n")
+            return G
         # Creating two sets, to be able to match, between "buyers and sellers"
         buyers = set()
         sellers = set()
