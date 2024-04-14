@@ -49,7 +49,7 @@ def sub_menu(selection:str):
         print("2. Partition G")
         print("3. Travel Equilibrium and Social Optimal")
         print("4. Perfect Matching")
-        print("5. Preferred-Seller Graph\n")
+        print("5. Market Clearance Algorithm\n")
     elif (selection == '5'):
         print("1. The Shortest Path")
         print("2. Cluster Coefficients")
@@ -375,10 +375,71 @@ def perfect_match(G):
         print(e)
         return G
 
-# Preferred Seller Graph for assignment 4
-def seller_graph(G):
-    print("Seller")
-    return G
+# Market Clearance Algorithm for assignment 4
+def market_clearance_algorithm(G):
+    try:
+        global market_graph_storage
+        # Checking if a market graph has been created
+        if (market_graph_storage == []):
+            print("Please Create a Market Graph first!\n")
+            return G
+        # Getting information from graph to perform Market Clearance algorithm
+        house_prices = []
+        preference = []
+        for node, data in market_graph_storage.nodes(data=True):
+            if data['type'] == 'seller':
+                house_prices.append([node, data['start_price']])
+            elif data['type'] == 'buyer':
+                preference.append([node, data['preference']])
+
+        # Figuring out payoffs for each of the buyers
+        # Recording which house gives the best payoff for each buyer's preference
+        matched_nodes = []
+        max_preference = []
+        matched = False
+        market_cleared = []
+
+        while matched == False:
+            for node in preference:
+                for index in range(len(node[1])):
+                    max_preference.append([house_prices[index][0],node[1][index] - house_prices[index][1]])
+                # Getting max value based on the profit of each house
+                # Used lambda function to use value rather than node as the max argument
+                # https://docs.python.org/3/reference/expressions.html
+                max_node = max(max_preference, key = lambda price: price[1])
+                matched_nodes.append(max_node)
+                market_cleared.append([node[0],max_node[0]])
+                max_preference = []
+            
+            # Checking if there is a constricted set
+            counter = []
+            for x in range(len(house_prices)):
+                counter.append(0)
+            for m in matched_nodes:
+                counter[int(m[0])-1] += 1
+            # If constriction, subtract 1, at the end, i should equal number of houses
+            i = 0
+            # Increasing the price of the house with constriction
+            for c in range(len(counter)):
+                if (counter[c] > 1):
+                    house_prices[c][1] += 1
+                    matched_nodes = []
+                    market_cleared = []
+                    i -= 1
+                i += 1
+            # If no constricted sets, while loop terminated and results are obtained
+            if i == len(counter):
+                matched = True
+                print("RESULTS!!!")
+                print("Final House Prices in [node, price] format:",house_prices)
+                # print(matched_nodes)
+                print("Preference Match in [buyer,seller format]:",market_cleared+"\n")
+                break
+        market_graph_storage.graph['market_clearance'] = market_cleared
+        return G
+    except Exception as e:
+        print(e)
+        return G
 
 # Plots the graph G and highlights shortest path if it exists
 # used https://stackoverflow.com/questions/24024411/highlighting-the-shortest-path-in-a-networkx-graph as a resource
@@ -825,8 +886,8 @@ def selection(selection: str, G) -> None:
             print("Now finding perfect match...")
             return perfect_match(G)
         elif (new == '5'):
-            print("Now computing preferred seller graph...")
-            return seller_graph(G)
+            print("Now computing market clearance algorithm...")
+            return market_clearance_algorithm(G)
         else:
             print("Invalid Option\n")
 
