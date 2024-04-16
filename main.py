@@ -1,6 +1,6 @@
 # Daniel Moreno 
 # CECS 427-01 Dynamic Networks
-# Due Date: April 9, 2024
+# Due Date: April 16, 2024
 
 # Importing networkx and numpy as recommended by the documentation
 import networkx as nx
@@ -782,14 +782,12 @@ def balanced_graph(G):
     except Exception as e:
         print("Something went wrong:",e)
 
-    
     # Plotting the graph now!
     # Defining position of the nodes
     pos = nx.spring_layout(G)
     nx.draw(G, pos, with_labels=True,node_size=500)
     nx.draw_networkx_edge_labels(G, pos, edge_labels=G.graph["balance"], font_size=20, font_color="red")
 
-    
     # Plotting the graph
     plt.show()
     return G
@@ -892,7 +890,6 @@ def plot_seller_graph(G):
     except Exception as e:
         print(e)
         return G
-    return G
 
 # Simple selction menu to handle user's input
 def selection(selection: str, G) -> None:

@@ -1,0 +1,17 @@
+# Daniel Moreno
+# CECS 427-01 Dynamic Networks
+# Due Date: April 16, 2024
+
+  For this assignment, I felt a bit more confident to what I was doing. I was able to (hopefully) implement everything correctly.
+I started by reviewing the class lecture notes I took to understand the Market Clearance Algorithm again, and once I got the general 
+idea, I started the assignment. I began to finish the tasks that were easiest to implement, such as "Create Bigraph", "Perfect Match",
+"Plot Bigraph", etc since most of those already had some implementation done by networkx. Once those were finished I implemented the 
+Market Clearing Algorithm as well as plotting.
+  The most difficult part of the assignment in my opinion was the Market Clearning algorithm. For one, there wasn't really a networkx
+function that helped me figure that part out. The other thing that was quite difficult was, that I understood how the algorithm worked
+and knew the general idea, however, it was a bit difficult to translate that into code. I really don't think my code is optimized, however,
+it got the job done, altough, I did end up using a bunch of loops and lists to get it done. I do thing there is a bit of a problem with the way
+I implemented, where sometimes since two houses have the same profit, it usually takes the 1st option even though that was is already taken, thus
+adding another step to the algorithm. Despite, that I do believe that the matching is correct and successfully "makes all buyers and sellers happy".
+  No additional features were implemented. I tried to implement most of what was asked to the best of my abilities. Thanks to the extension, I was
+able to get it successfully done. If not, I would have probably turned in this assignment very late, so thank you very much for the extension.
