@@ -433,9 +433,15 @@ def market_clearance_algorithm(G):
                 print("RESULTS!!!")
                 print("Final House Prices in [node, price] format:",house_prices)
                 # print(matched_nodes)
-                print("Preference Match in [buyer,seller format]:",market_cleared+"\n")
+                print("Preference Match in [buyer,seller] format:",market_cleared)
+                print()
                 break
-        market_graph_storage.graph['market_clearance'] = market_cleared
+        # Adding final prices to each of the house
+        for node in house_prices:
+            market_graph_storage.nodes[node[0]]["final_price"] = node[1]
+        # Connecting buyer to seller nodes based on algorithm
+        for pair in market_cleared:
+            market_graph_storage.add_edge(pair[0],pair[1])
         return G
     except Exception as e:
         print(e)
@@ -570,8 +576,6 @@ def plot_cluster(G):
 
     # Displaying the graph using matplotlib
     plt.show()
-    
-    
     return G
 
 # Neighborhood overlap mapping
@@ -834,8 +838,60 @@ def plot_bigraph(G):
     return G
 
 # Plotting Preferred Seller Graph Assignment 4
+# Very similar to Plot Bigraph Function
 def plot_seller_graph(G):
-    print("Plot Sell")
+    try:
+        global market_graph_storage
+        left_nodes = []
+        right_nodes = []
+        for node,data in market_graph_storage.nodes(data=True):
+            if data['bipartite'] == 0:
+                left_nodes.append(node)
+            else:
+                right_nodes.append(node)
+        # Defines positioning for bipartite graph
+        # https://networkx.org/documentation/stable/reference/generated/networkx.drawing.layout.bipartite_layout.html
+        pos = nx.bipartite_layout(market_graph_storage, left_nodes)
+
+        # Placing nodes on the "canvas"
+        nx.draw_networkx_nodes(market_graph_storage, pos, nodelist=left_nodes, node_color='b', label='Sellers')
+        nx.draw_networkx_nodes(market_graph_storage, pos, nodelist=right_nodes, node_color='r', label='Buyers')
+
+        # Drawing the edges created by market clearance
+        nx.draw_networkx_edges(market_graph_storage, pos)
+
+        # Labeling the graph
+        labels = {}
+        # Using same key as value since node 1 corresponds to node 1 from node_list
+        for node,data in market_graph_storage.nodes(data=True):
+            if data['bipartite'] == 0:
+                labels.update({node: 'S'+str(node)})
+            else:
+                labels.update({node: 'B'+str(int(node) % 4 + 1)})
+
+        # Adding information for each node
+        for node, (x, y) in pos.items():
+            if market_graph_storage.nodes[node]['bipartite'] == 0:
+                plt.text(x - 0.2, y, market_graph_storage.nodes[node]['final_price'], fontsize=10, color='black')
+            else:
+                plt.text(x + 0.1, y, market_graph_storage.nodes[node]['preference'], fontsize=10, color='black')
+        nx.draw_networkx_labels(market_graph_storage, pos, labels=labels)
+
+        # Displaying Bipratite Graph Legend
+        # https://matplotlib.org/stable/api/_as_gen/matplotlib.pyplot.legend.html
+        plt.legend(loc='upper center')
+
+        # Adding a title
+        plt.title("Seller Preference Graph")
+
+        # Actually Displaying
+        # Turning off x and y axis to plot on a "blank page"
+        plt.axis("off")
+        plt.show()
+        return G
+    except Exception as e:
+        print(e)
+        return G
     return G
 
 # Simple selction menu to handle user's input
