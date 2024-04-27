@@ -35,9 +35,11 @@ class www_spider(scrapy.Spider):
             for links in response.css('span[itemprop="author"] a::attr(href)').getall():
                 print(links)
                 try:
-                    yield{"link":links}
+                    yield{response.url:links}
+                    #yield{"link":links}
                 except Exception as e:
-                    yield{"link":"NONE"}
+                    yield{response.url:"NONE"}
+                    #yield{"link":"NONE"}
         # Exiting if there is a problem that is encountered
         except Exception as e:
             self.logger.error("Error parsing response: %s", e)
@@ -60,11 +62,12 @@ class www_spider(scrapy.Spider):
             print("Error:", e)
             return []
 
+    '''
     # When spider is done executing, this funciton will be called, will output the file
     # https://stackoverflow.com/questions/12394184/scrapy-call-a-function-when-a-spider-quits
     def closed(self, reason):
         curr_dir = os.path.dirname(os.path.abspath(__file__))
         out_path = os.path.join(curr_dir, '..', '..', '..', 'output.json')
         with open(out_path, 'w') as out:
-            json.dump(self.dict, out)
+            json.dump(self.dict, out)'''
 

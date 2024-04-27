@@ -455,7 +455,27 @@ def market_clearance_algorithm(G):
 
 # Page rank algorithm for assignment 5
 def page_rank_algo(G):
-    print("PAGE RANK")
+    global web_page_graph
+
+    # If graph already exists, just do page rank
+    if web_page_graph != []:
+        return G
+    # If graph doesn't exist, graph will first be created
+    try:
+        temp = []
+        file = input("Please enter file you want to use: ")
+        with open(file, 'r') as f:
+            for line in f:
+                temp.append(line)
+            f.close()
+            print(temp[:5])
+            print("-----------------------------------------")
+            nodes = list(set(temp))
+            print(nodes[:5])
+            return G
+    except Exception as e:
+        print("Error: ", e)
+        return G
 
 # Plots the graph G and highlights shortest path if it exists
 # used https://stackoverflow.com/questions/24024411/highlighting-the-shortest-path-in-a-networkx-graph as a resource
