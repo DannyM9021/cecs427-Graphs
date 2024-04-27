@@ -931,16 +931,21 @@ def plot_seller_graph(G):
 def page_rank_graph(G):
     global web_page_graph
 
+    # Checking if a graph exists
     if web_page_graph == []:
         print("Please do Page Rank Algorithm first")
         return G
     try:
+        # Getting the position of the nodes relative to a blank graph
         pos = nx.spring_layout(web_page_graph)
+        # Drawing the graph
         nx.draw(web_page_graph, pos, with_labels=True, arrows=True)
+        # Moving the labels so they can be visible (kind of)
         page_ranks = web_page_graph.graph["page_rank"]
         label_position = {}
         for node, (x,y) in pos.items():
             label_position.update({node: (x, y + 0.07)})
+        # Plotting the labels along with their corresponding node
         nx.draw_networkx_labels(web_page_graph, label_position, labels=page_ranks)
         plt.show()
         return G
@@ -950,7 +955,34 @@ def page_rank_graph(G):
 
 # Plotting LogLog Graph for assignment 5
 def loglog(G):
-    print("LOGLOG")
+    # Getting the indegree
+    # https://networkx.org/documentation/stable/reference/classes/generated/networkx.DiGraph.in_degree.html
+    indegree = dict(web_page_graph.in_degree())
+
+    # Counting the frequencies of each indegree per node
+    frequency = {}
+    # Going through each of the nodes then incrementing based on indegree
+    for node, indeg in indegree.items():
+        # Initializing each of the indegrees to 0
+        # https://www.w3schools.com/python/ref_dictionary_setdefault.asp
+        frequency.setdefault(indeg,0)
+        frequency[indeg] += 1
+    print(frequency)
+    # Assigning key and values to be plotted later
+    indeg_vals = list(frequency.keys())
+    indeg_freq = list(frequency.values())
+    # Taking the logarithm of the values so they can be graphed
+    lg_indeg_val = np.log10(indeg_vals)
+    lg_indeg_freq = np.log10(indeg_freq)
+
+    # Plotting the graph now to show the loglog graph
+    plt.figure()
+    plt.scatter(lg_indeg_val, lg_indeg_freq, marker = "*")
+    plt.xlabel("LOG(INDEGREE)")
+    plt.ylabel("LOG(FREQUENCY)")
+    plt.title("LOG LOG GRAPH")
+    plt.show()
+    return G
 
 # Simple selction menu to handle user's input
 def selection(selection: str, G) -> None:
