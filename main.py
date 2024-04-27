@@ -14,6 +14,7 @@ import dwave_networkx as dnx
 # In case needed for bipartite algorithms
 # https://networkx.org/documentation/stable/reference/algorithms/bipartite.html
 from networkx.algorithms import bipartite
+import json
 
 # Making a global variable for shortest path
 short = []
@@ -462,16 +463,21 @@ def page_rank_algo(G):
         return G
     # If graph doesn't exist, graph will first be created
     try:
-        temp = []
+        nodes = []
         file = input("Please enter file you want to use: ")
         with open(file, 'r') as f:
-            for line in f:
-                temp.append(line)
-            f.close()
-            print(temp[:5])
-            print("-----------------------------------------")
-            nodes = list(set(temp))
-            print(nodes[:5])
+            data = json.load(f)
+            for value in data:
+                #dictionary = json.loads(value)
+                nodes.append(value)
+            # Creating the directed graph
+            web_page_graph = nx.DiGraph()
+            for list_item in nodes:
+                for key, value in list_item.items():
+                    web_page_graph.add_nodes_from([key,value])
+                    web_page_graph.add_edge(key,value)
+            web_page_graph.graph["page_rank"] = nx.pagerank(web_page_graph)
+            print("Page Rank saved")
             return G
     except Exception as e:
         print("Error: ", e)
