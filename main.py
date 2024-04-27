@@ -1,6 +1,6 @@
 # Daniel Moreno 
 # CECS 427-01 Dynamic Networks
-# Due Date: April 16, 2024
+# Due Date: April 28, 2024
 
 # Importing networkx and numpy as recommended by the documentation
 import networkx as nx
@@ -24,6 +24,9 @@ digraph_storage = []
 # Making global variable to store Bigraph for assignment 4
 bigraph_storage = []
 market_graph_storage = []
+
+# Making global variable graph for page rank
+web_page_graph = []
 
 # Printing a CLI menu so user knows the options
 def menu():
@@ -49,13 +52,16 @@ def sub_menu(selection:str):
         print("2. Partition G")
         print("3. Travel Equilibrium and Social Optimal")
         print("4. Perfect Matching")
-        print("5. Market Clearance Algorithm\n")
+        print("5. Market Clearance Algorithm")
+        print("6. Page Rank Algorithm\n")
     elif (selection == '5'):
         print("1. The Shortest Path")
         print("2. Cluster Coefficients")
         print("3. Neighborhood Overlaps")
         print("4. Bipartite Graph")
-        print("5. Preferred-Seller Graph\n")
+        print("5. Preferred-Seller Graph")
+        print("6. Page Rank of Web Graph")
+        print("7. Loglog Graph\n")
     elif (selection == '6'):
         print("1. Homophily")
         print("2. Balanced Graph")
@@ -446,6 +452,10 @@ def market_clearance_algorithm(G):
     except Exception as e:
         print(e)
         return G
+
+# Page rank algorithm for assignment 5
+def page_rank_algo(G):
+    print("PAGE RANK")
 
 # Plots the graph G and highlights shortest path if it exists
 # used https://stackoverflow.com/questions/24024411/highlighting-the-shortest-path-in-a-networkx-graph as a resource
@@ -891,6 +901,14 @@ def plot_seller_graph(G):
         print(e)
         return G
 
+# Plotting the Page Rank Graph 5
+def page_rank_graph(G):
+    print("PAGE GRAPH")
+
+# Plotting LogLog Graph for assignment 5
+def loglog(G):
+    print("LOGLOG")
+
 # Simple selction menu to handle user's input
 def selection(selection: str, G) -> None:
 
@@ -941,6 +959,9 @@ def selection(selection: str, G) -> None:
         elif (new == '5'):
             print("Now computing market clearance algorithm...")
             return market_clearance_algorithm(G)
+        elif (new == '6'):
+            print("Now computing Page Rank...")
+            return page_rank_algo(G)
         else:
             print("Invalid Option\n")
 
@@ -962,6 +983,12 @@ def selection(selection: str, G) -> None:
         elif (new == '5'):
             print("Now Plotting Preferred-Seller Graph...")
             return plot_seller_graph(G)
+        elif (new == '6'):
+            print("Now Plotting Page Rank Graph...")
+            return page_rank_graph(G)
+        elif (new == '7'):
+            print("Now Plotting Loglog Graph...")
+            return loglog(G)
         else:
             print("Invalid Option\n")
 
