@@ -1,0 +1,22 @@
+# Daniel Moreno
+# CECS 427-01 Dynamic Networks
+# Due Date: April 27, 2024
+
+  This was probably one of the hardest assignment for this project. Not because of the difficulty of the project itself, rather that I had a lot of other assignments that I also
+needed to complete. The part that took the longest was trying to learn how to use scrapy and how to create a spider from pretty much scratch. Learning how to use it probably took 
+the most time for me. I looked mainly in the scrapy documentation, but also turned to YouTube videos to help guide me in the correct direction. I felt like I was running out of time,
+luckily, it seemed like most of the funcitons I needed for the main file could be found within networkx (such as page rank), so that helped somewhat. Once I felt that I had enough
+knowledge, I started to create my own scrapy project to try and scrape what was necessary to complete the assignment. I basically followed the tutorial (which I linked as a comment
+in the www_spider.py file), but then modified it to fit the assignment.
+  Most of the problems came from scrapy. It was probably due to inexperience, since I have never used it before, but with the help of a tutorial and the scrapy documentation, I felt
+like I was making some good progress. The main problem I was stuck on was due to how I was trying to run the crawler. I saw that one of the common ways to run a spider was to use
+CrawlerProcess, which made the spider behave like a script. However, when I ran it on the terminal, I was using "scrapy crawl www_spider", the problem was that it was basically running
+two instances of the class, when only one was allowed. That problem took me the longest to solve, and I was about to give up. The way I realized that two of the classes were being 
+initiated was from a print statement I had left when initializing values to the spider. I noticed that it was printing two times, and sure enough, that was the problem. After that, the
+only realy problem was trying to parse the output file correctly in the main file. By the way, the way I ran the spider at the end was using "scrap crawl www_spider -O ..\links.json", that
+way when the spider was done running, it would output the links to a json file in my main directory.
+  Overall, I felt like maybe I would have enjoyed this assignment more if I had more time, and less assignments for all my other classes. I felt like I need to rush and almost ended up 
+just skipping this assignment. Before I forget, I also wanted to mention that I tried to plot all the nodes for the PageRank Graph, therefore I only used 100 iterations, so not all of the 
+nodes are showing up. Since I saved the graph as only 100 iterations, I'm pretty sure that is why my loglog graph is also wrong, there is only a single point, which I assume is only from 
+the first start_url link (since the way I saved the links was {start_url:visited_url}). I wish I had more time so I could have done this assignment a bit more correctly, but end of the 
+year (especially end of senior year) is very stressful.
