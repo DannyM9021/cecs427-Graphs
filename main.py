@@ -472,8 +472,8 @@ def page_rank_algo(G):
                 nodes.append(value)
             # Creating the directed graph
             web_page_graph = nx.DiGraph()
-            for list_item in nodes:
-                for key, value in list_item.items():
+            for list_item in range(100):
+                for key, value in nodes[list_item].items():
                     web_page_graph.add_nodes_from([key,value])
                     web_page_graph.add_edge(key,value)
             web_page_graph.graph["page_rank"] = nx.pagerank(web_page_graph)
@@ -929,7 +929,24 @@ def plot_seller_graph(G):
 
 # Plotting the Page Rank Graph 5
 def page_rank_graph(G):
-    print("PAGE GRAPH")
+    global web_page_graph
+
+    if web_page_graph == []:
+        print("Please do Page Rank Algorithm first")
+        return G
+    try:
+        pos = nx.spring_layout(web_page_graph)
+        nx.draw(web_page_graph, pos, with_labels=True, arrows=True)
+        page_ranks = web_page_graph.graph["page_rank"]
+        label_position = {}
+        for node, (x,y) in pos.items():
+            label_position.update({node: (x, y + 0.07)})
+        nx.draw_networkx_labels(web_page_graph, label_position, labels=page_ranks)
+        plt.show()
+        return G
+    except Exception as e:
+        print("Error", e)
+        return G
 
 # Plotting LogLog Graph for assignment 5
 def loglog(G):
