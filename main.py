@@ -508,7 +508,9 @@ def cascade_effect(G):
                 karate_graph.nodes[node]['cascade'] = False
         
         # Plotting original graph
-        pos = nx.spring_layout(karate_graph)
+        # Making layout circular so it looks nicer
+        # https://networkx.org/documentation/stable/reference/generated/networkx.drawing.layout.circular_layout.html
+        pos = nx.circular_layout(karate_graph)
         colors = []
         for node in karate_graph.nodes():
             if karate_graph.nodes[node]['cascade'] == True:
@@ -519,7 +521,7 @@ def cascade_effect(G):
         nx.draw(karate_graph, pos, with_labels=True, node_color=colors)
         plt.legend(['Red=Adopted',"Blue = Not Adopted"],loc="upper left")
         title = f"Original Graph, Initiators = {initiator}, threshold = {threshold}"
-        plt.text(0,-0.6, title, fontsize=15, horizontalalignment='center')
+        plt.text(0,1.15, title, fontsize=15, horizontalalignment='center')
         plt.show()
 
         # Simulating the cascade effect in 5 rounds
@@ -541,7 +543,7 @@ def cascade_effect(G):
                 karate_graph.nodes[new_node]['cascade'] = True
 
         # Plotting cascaded graph after 5 rounds
-        pos = nx.spring_layout(karate_graph)
+        pos = nx.circular_layout(karate_graph)
         colors = []
         for node in karate_graph.nodes():
             if karate_graph.nodes[node]['cascade'] == True:
@@ -555,7 +557,7 @@ def cascade_effect(G):
         # Adding a title to the graph
         # https://matplotlib.org/stable/api/_as_gen/matplotlib.pyplot.text.html
         title = f"Cascade After 5 Rounds, Initiators = {initiator}, threshold = {threshold}"
-        plt.text(0,-0.6, title, fontsize=15, horizontalalignment='center')
+        plt.text(0,1.15, title, fontsize=15, horizontalalignment='center')
         plt.show()
 
         return G
