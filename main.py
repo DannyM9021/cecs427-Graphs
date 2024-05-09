@@ -54,7 +54,9 @@ def sub_menu(selection:str):
         print("3. Travel Equilibrium and Social Optimal")
         print("4. Perfect Matching")
         print("5. Market Clearance Algorithm")
-        print("6. Page Rank Algorithm\n")
+        print("6. Page Rank Algorithm")
+        print("7. Cascade Effect Algorithm")
+        print("8. Covid-19 Algorithm\n")
     elif (selection == '5'):
         print("1. The Shortest Path")
         print("2. Cluster Coefficients")
@@ -478,10 +480,95 @@ def page_rank_algo(G):
                     web_page_graph.add_edge(key,value)
             web_page_graph.graph["page_rank"] = nx.pagerank(web_page_graph)
             print("Page Rank saved")
+            print(web_page_graph)
             return G
     except Exception as e:
         print("Error: ", e)
         return G
+
+# Implementing Cascade Effect for assignment 6
+def cascade_effect(G):
+    # Asking user for input
+    initiator = int(input("Number of initiators: "))
+    threshold = float(input("Threshold q (float): "))
+    # Generating the karate graph that will be used for cascade
+    print("Generating Karate Graph for cascade effect...")
+    karate_graph = karate_club(G)
+    temp_graph = list(karate_graph.nodes())
+    # Used random sample function provided by python
+    # https://docs.python.org/3/library/random.html
+    random_initiators = random.sample(temp_graph, k=initiator)
+
+    try:
+        # Making initiators True only for the one's selected
+        for node in karate_graph.nodes():
+            if node in random_initiators:
+                karate_graph.nodes[node]['cascade'] = True
+            else:
+                karate_graph.nodes[node]['cascade'] = False
+        
+        # Plotting original graph
+        pos = nx.spring_layout(karate_graph)
+        colors = []
+        for node in karate_graph.nodes():
+            if karate_graph.nodes[node]['cascade'] == True:
+                colors.append("red")
+            else:
+                colors.append("blue")
+
+        nx.draw(karate_graph, pos, with_labels=True, node_color=colors)
+        plt.legend(['Red=Adopted',"Blue = Not Adopted"],loc="upper left")
+        title = f"Original Graph, Initiators = {initiator}, threshold = {threshold}"
+        plt.text(0,-0.6, title, fontsize=15, horizontalalignment='center')
+        plt.show()
+
+        # Simulating the cascade effect in 5 rounds
+        for i in range(5):
+            newly_adopted = []
+            # Going through each node in the graph
+            for node in karate_graph.nodes():
+                # Getting all neighbors and checking if that neighbor is part of cascade
+                neighbor_list = list(karate_graph.neighbors(node))
+                total_neighbors = len(neighbor_list)
+                adopted = 0
+                for neighbor in neighbor_list:
+                    if karate_graph.nodes[neighbor]['cascade'] == True:
+                        adopted += 1
+                # If neighbors_adopted/total_neighbors > q, then will adopt
+                if (adopted/total_neighbors) > threshold:
+                    newly_adopted.append(node)
+            for new_node in newly_adopted:
+                karate_graph.nodes[new_node]['cascade'] = True
+
+        # Plotting cascaded graph after 5 rounds
+        pos = nx.spring_layout(karate_graph)
+        colors = []
+        for node in karate_graph.nodes():
+            if karate_graph.nodes[node]['cascade'] == True:
+                colors.append("red")
+            else:
+                colors.append("blue")
+
+        # Same as original graph, but with different title
+        nx.draw(karate_graph, pos, with_labels=True, node_color=colors)
+        plt.legend(['Red=Adopted',"Blue = Not Adopted"],loc="upper left")
+        # Adding a title to the graph
+        # https://matplotlib.org/stable/api/_as_gen/matplotlib.pyplot.text.html
+        title = f"Cascade After 5 Rounds, Initiators = {initiator}, threshold = {threshold}"
+        plt.text(0,-0.6, title, fontsize=15, horizontalalignment='center')
+        plt.show()
+
+        return G
+
+    # Adding exception
+    except Exception as e:
+        print("Error:",e)
+        return G
+
+# Implementing Covid 19 for assignment 6
+def covid(G):
+    print("COVID")
+    return G
 
 # Plots the graph G and highlights shortest path if it exists
 # used https://stackoverflow.com/questions/24024411/highlighting-the-shortest-path-in-a-networkx-graph as a resource
@@ -1037,6 +1124,11 @@ def selection(selection: str, G) -> None:
         elif (new == '6'):
             print("Now computing Page Rank...")
             return page_rank_algo(G)
+        elif (new == '7'):
+            print("Now computing cascade effect...")
+            return cascade_effect(G)
+        elif (new == '8'):
+            return covid(G)
         else:
             print("Invalid Option\n")
 
