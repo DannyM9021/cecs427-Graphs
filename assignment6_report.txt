@@ -1,0 +1,14 @@
+# Daniel Moreno
+# CECS 427-01 Dynamic Networks
+# Due Date: May 10, 2024
+
+  This time I was only able to complete half of the assignment. I do believe I could have finished the other half of the assignment, but I ran out of time.
+The only part I was able to complete was the cascade effect. I think I may have coded it pretty inefficiently, but it seems to have worked. I was not able
+to attempt the Covid graph due to the lack of time and the pile of work I had left right at the end. Maybe with better time management, I would have been able
+to finish the entire assignment.
+  Well, I'll just explain what I did for cascade effect. I was trying to see if Networkx had any function that implemented it for me already, but I was unable
+to find any, so instead I just went back to the lectures and tried to understand how to do it. Once, I got a basic understanding I went to implement. I didn't 
+take as long as I thought, but it feels highly unoptimized. But it does work, and I'm sure it is a pretty good implementation. 
+  The main difficulties I had was trying to make time for all the assignments I needed to do, so unfortunately I was not able to finish this assignment to the fullest,
+even with the generous extension given. I would have liked to have finished this assignment and had this whole file completed as it was expected, but was unable to finish.
+Maybe once this semester is over, I may revisit the project and try to finish it completely as intended. Other than that, thank you for a good semester professor!

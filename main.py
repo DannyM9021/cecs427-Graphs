@@ -569,8 +569,26 @@ def cascade_effect(G):
 
 # Implementing Covid 19 for assignment 6
 def covid(G):
-    print("COVID")
-    return G
+    try:
+        # Getting user input
+        infected = float(input("What fraction of the nodes are infected: "))
+        lifespan = int(input("How long is the simulation: "))
+        shelter = float(input("What fraction is not considered shelter-in-place: "))
+        vaccine_rate = float(input("What is the vaccination rate: "))
+
+        # Initializing empty graph
+        covid_graph = nx.Graph()
+
+        # Reading in the file
+        file_path = "./graph.edgelist"
+        with open(file_path, 'r') as file:
+            for line in file:
+                split_line = line.split(" ")
+                covid_graph.add_edge(split_line[0], split_line[1])
+        return G
+    except Exception as e:
+        print("Error", e)
+        return G
 
 # Plots the graph G and highlights shortest path if it exists
 # used https://stackoverflow.com/questions/24024411/highlighting-the-shortest-path-in-a-networkx-graph as a resource
